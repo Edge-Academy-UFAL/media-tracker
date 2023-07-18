@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function Movies() {
     const [data, setData] = useState({});
@@ -10,7 +10,7 @@ export default function Movies() {
             headers: {
                 accept: "application/json",
                 Authorization:
-                    "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlZWVmY2M2M2M4NzljNjVlNzJmNTBmMjc2OTJlYmU2OSIsInN1YiI6IjY0YjU4YmI0YTZkZGNiMDBhZTZiMjg0YiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.hHvoZNkUX7Si48aXNTcXIGWCO-v6oxJiIhdqjyIuSv8",
+                    `Bearer ${process.env.REACT_APP_TOKEN}`,
             },
         });
 
@@ -19,18 +19,31 @@ export default function Movies() {
         setData(response);
     }
 
-    return (
+    return(
         <div>
+            <button onClick={() => {
+                const body = document.querySelector("body");
+                body.classList.toggle("dark");
+                const button = document.querySelector("button");
+                button.textContent = body.classList.contains("dark") ? "Light Mode" : "Dark Mode";
+            }}>
+                Dark Mode
+            </button>
             <h1>Busca de filmes?</h1>
-            <input type="text" onChange={(e) => setTitle(e.target.value)} />
-            <button onClick={() => getData()}>Pesquisar</button>
-
-            {data.results?.map((item) => (
-                <div className="flex" key={item.id}>
-                    <h1>{item.title}</h1>
-                    <img src={`https://image.tmdb.org/t/p/w500${item.poster_path}`} alt={item.title} width="300px" />
-                </div>
-            ))}
+            <form onSubmit={(e) => e.preventDefault()}>
+                <input type="text" onChange={(e) => setTitle(e.target.value)} />
+                <button onClick={() => getData()}>Pesquisar</button>
+            </form>
+            <div className="movie-container">
+                {data.results?.map((item) => (
+                    <div key={item.id}>
+                        <h4 style={{ textAlign: "center", maxWidth: "300px" }}>
+                            {item.title} ({new Date(item.release_date).getFullYear()})
+                        </h4>
+                        <img src={`https://image.tmdb.org/t/p/w500${item.poster_path}`} alt={item.title} width="300px" />
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }
