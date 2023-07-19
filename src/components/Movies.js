@@ -1,23 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Movies() {
     const [data, setData] = useState({});
     const [title, setTitle] = useState({});
 
-    async function getData() {
-        const received = await fetch(`https://api.themoviedb.org/3/search/movie?query=${title}`, {
-            method: "GET",
-            headers: {
-                accept: "application/json",
-                Authorization:
-                    `Bearer ${process.env.REACT_APP_TOKEN}`,
-            },
-        });
 
-        const response = await received.json();
-        console.log(response);
-        setData(response);
-    }
+    useEffect(() => {
+        async function getData() {
+            const received = await fetch(`https://api.themoviedb.org/3/search/movie?query=${title}`, {
+                method: "GET",
+                headers: {
+                    accept: "application/json",
+                    Authorization:
+                        `Bearer ${process.env.REACT_APP_TOKEN}`,
+                },
+            });
+    
+            const response = await received.json();
+            console.log(response);
+            setData(response);
+        }
+
+        getData()
+
+    }, [title])
+
 
     return(
         <div>
@@ -32,7 +39,7 @@ export default function Movies() {
             <h1>Busca de filmes?</h1>
             <form onSubmit={(e) => e.preventDefault()}>
                 <input type="text" onChange={(e) => setTitle(e.target.value)} />
-                <button onClick={() => getData()}>Pesquisar</button>
+                <button>Pesquisar</button>
             </form>
             <div className="movie-container">
                 {data.results?.map((item) => (

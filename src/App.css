@@ -3,8 +3,19 @@
     flex-direction: row;
     flex-wrap: wrap;
     align-items: self-end;
-    gap: 10px
+    gap: 10px;
+    
 }
+
+.movie-container > div {
+    cursor: pointer;
+}
+
+.movie-container div:hover{
+    transition: 0.5s;
+    transform: translateY(-15px);
+}
+
 
 body{
     transition: background-color 0.5s ease;
