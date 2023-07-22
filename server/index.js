@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const { PrismaClient } = require('@prisma/client');
 require('dotenv').config();
 
 const app = express();
@@ -28,6 +29,14 @@ function normalizaPort(val) {
   }
   return false;
 }
+
+const userRoute = require('./src/routes/userRoute');
+const filmRoute = require('./src/routes/filmRoute');
+const userMovieRoute = require('./src/routes/userMovieRoute');
+
+app.use('/users', userRoute);
+app.use('/films', filmRoute);
+app.use('/userMovies', userMovieRoute);
 
 const port = normalizaPort(process.env.PORT || '3001');
 

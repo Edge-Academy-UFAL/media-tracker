@@ -11,16 +11,16 @@ datasource db {
 }
 
 model Usuario {
-  id    String @id @default(uuid())
-  email String @unique
-  nome  String
-  senha String
-  filmes UsuarioFilme[]
+  id        String      @id @default(uuid())
+  email     String      @unique
+  nome      String
+  senha     String
+  UserMovie UserMovie[]
 }
 
 model Filme {
-  id            String @id @default(uuid())
-  tmdbId         Int    @unique
+  id             String      @id @default(uuid())
+  tmdbId         Int         @unique
   original_title String
   overview       String
   popularity     Float
@@ -28,11 +28,18 @@ model Filme {
   release_date   String
   vote_average   Float
   vote_count     Int
-  usuarios       UsuarioFilme[]
+  UserMovie      UserMovie[]
 }
 
-model UsuarioFilme {
-  id       String  @id @default(uuid())
-  usuario  Usuario @relation(fields: [id], references: [id], map: "usuario_id_fkey")
-  filme    Filme   @relation(fields: [id], references: [id], map: "filme_id_fkey")
+model UserMovie {
+  situacao  String
+  avaliacao Int?
+  local_assistido String?
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+  usuarioId String
+  filme     Filme   @relation(fields: [filmeId], references: [id])
+  filmeId   String
+
+  @@id([usuarioId, filmeId])
 }
+
