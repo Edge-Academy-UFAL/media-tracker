@@ -47,19 +47,37 @@ async function loginUser(request, response) {
 
 
 async function getMoviesByIdUser(request, response) {
-  // const { userId } = request.params;
-  // try {
-  //   const user = await prisma.usuario.findUnique({
-  //     where:{
-  //       email,
-  //       senha
-  //     }
-  //   });
+  const { userId } = request.params;
+  try {
+    const user = await prisma.userMovie.findMany({
+      where:{
+        usuarioId: userId
+      }
+    });
 
-  //   response.status(201).send(userId);
-  // } catch (err) {
-  //   response.status(500).send({ error: err });
-  // }
+    var movies = []
+
+    for(let i= 0 ; i < user.length; i++){
+      const movie = await prisma.filme.findUnique({
+        where: {
+          id: user[i].filmeId
+        }
+      })
+
+      movies.push(movie)
+    }
+    
+    
+    // const movies = await prisma.filme.findMany({
+    //   where: {
+    //     id: 
+    //   }
+    // })
+
+    response.status(201).send(movies);
+  } catch (err) {
+    response.status(500).send({ error: err });
+  }
 }
 
 
