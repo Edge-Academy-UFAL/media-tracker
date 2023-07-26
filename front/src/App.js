@@ -1,13 +1,9 @@
 import "./App.css";
 import Movies from "./components/Movies";
+import Login from "./pages/Login";
 
 function App() {
-    return (
-        <div>
-            Media Tracker
-            <Movies />
-        </div>
-    );
+  return <Login />;
 }
 
 export default App;
