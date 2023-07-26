@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import './Movies.css';
 
 export default function Movies() {
   const [data, setData] = useState({});
@@ -39,7 +40,7 @@ export default function Movies() {
       >
         Dark Mode
       </button>
-      <h1>Qual o filme?</h1>
+      <h1 className="bg-red-500">Qual o filme?</h1>
       <form onSubmit={(e) => e.preventDefault()}>
         <input
           type="text"
