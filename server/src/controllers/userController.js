@@ -7,7 +7,7 @@ async function getUsers(request, response) {
     const users = await prisma.usuario.findMany();
     response.status(200).send(users);
   } catch (err) {
-    response.status(500).send({ error: 'Internal server error' });
+    response.status(500).send({ err });
   }
 }
 
