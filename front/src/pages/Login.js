@@ -1,6 +1,10 @@
 import React from "react";
 
+import { useNavigate } from "react-router-dom";
+
 export default function Login() {
+  const navigate = useNavigate();
+
   return (
     <div className="flex h-full h-full w-full flex-1 items-center flex-col justify-center px-6 py-12 lg:px-8 text-white">
       <div className="h-full rounded-xl bg-primary-500 px-40 py-8 my-16">
@@ -44,7 +48,7 @@ export default function Login() {
 
         <p className="mt-6 text-center text-xl text-white opacity-30">
           Don’t have an account?{" "}
-          <a href="#" className="underline">
+          <a href="#" className="underline" onClick={() => navigate("/signUp")}>
             Create here
           </a>
         </p>

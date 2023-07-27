@@ -1,6 +1,10 @@
 import React from "react";
 
+import { useNavigate } from "react-router-dom";
+
 export default function SignUp() {
+  const navigate = useNavigate();
+
   return (
     <div className="flex h-full h-full w-full flex-1 items-center flex-col justify-center px-6 py-12 lg:px-8 text-white">
       <div className="h-full rounded-xl bg-primary-500 px-40 py-8 my-16">
@@ -11,12 +15,12 @@ export default function SignUp() {
           </h2>
         </div>
 
-        <form className="space-y-6 mt-16" action="#" method="POST">
+        <form className="space-y-6 mt-16" action="#">
           <input
             id="name"
-            name="name"
-            type="text"
-            autoComplete="name"
+            name="text"
+            type="email"
+            autoComplete="email"
             required
             placeholder="Name"
             className="block w-full rounded-xl border-0 py-5 px-4 text-white text-lg outline-none shadow-sm bg-primary-700"
@@ -47,15 +51,15 @@ export default function SignUp() {
               type="submit"
               className="flex w-full text-center justify-center rounded-xl bg-primary-300 px-3 py-4 text-2xl font-semibold leading-6 text-white shadow-sm transition hover:brightness-105"
             >
-              Sign up
+              Sign in
             </button>
           </div>
         </form>
 
         <p className="mt-6 text-center text-xl text-white opacity-30">
-          Already have an account?{" "}
-          <a href="#" className="underline">
-            Sign in
+          Don’t have an account?{" "}
+          <a href="#" className="underline" onClick={() => navigate("/")}>
+            Create here
           </a>
         </p>
       </div>
