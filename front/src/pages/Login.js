@@ -9,7 +9,7 @@ export default function Login() {
     <div className="flex h-full h-full w-full flex-1 items-center flex-col justify-center px-6 py-12 lg:px-8 text-white">
       <div className="h-full rounded-xl bg-primary-500 px-40 py-8 my-16">
         <div className="flex flex-col items-center justify-center sm:mx-auto sm:w-full sm:max-w-sm">
-          <img className="mt-8 w-80" src="./mediatracker.svg"></img>
+          <img className="mt-8 w-80" src="./mediatracker.svg" alt="mediatracker's logo"></img>
           <h2 className="mt-24 text-center text-4xl font-bold leading-9 tracking-tight">
             Sign in to your account
           </h2>
@@ -48,9 +48,9 @@ export default function Login() {
 
         <p className="mt-6 text-center text-xl text-white opacity-30">
           Don’t have an account?{" "}
-          <a href="#" className="underline" onClick={() => navigate("/signUp")}>
+          <span className="underline" onClick={() => navigate("/signUp")}>
             Create here
-          </a>
+          </span>
         </p>
       </div>
     </div>
