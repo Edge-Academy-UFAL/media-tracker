@@ -1,6 +1,6 @@
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-const express = require('express');
+const express = require("express");
 
 async function getUsers(request, response) {
   try {
@@ -27,16 +27,14 @@ async function createUser(request, response) {
   }
 }
 
-
-
 async function loginUser(request, response) {
   const { email, senha } = request.body;
   try {
     const user = await prisma.usuario.findUnique({
       where: {
         email,
-        senha
-      }
+        senha,
+      },
     });
 
     response.status(201).send(user);
@@ -45,34 +43,30 @@ async function loginUser(request, response) {
   }
 }
 
-
 async function getMoviesByIdUser(request, response) {
   const { userId } = request.params;
   try {
     const user = await prisma.userMovie.findMany({
-      where:{
-        usuarioId: userId
-      }
+      where: {
+        usuarioId: userId,
+      },
     });
 
-    var movies = []
+    var movies = [];
 
-    for(let i= 0 ; i < user.length; i++){
+    for (let i = 0; i < user.length; i++) {
       const movie = await prisma.filme.findUnique({
         where: {
-          id: user[i].filmeId
-        }
-      })
+          id: user[i].filmeId,
+        },
+      });
 
-      movies.push(movie)
+      movie["situacao"] = user[i].situacao;
+      movie["avaliacao"] = user[i].avaliacao;
+      movie["local_assistido"] = user[i].local_assistido;
+
+      movies.push(movie);
     }
-    
-    
-    // const movies = await prisma.filme.findMany({
-    //   where: {
-    //     id: 
-    //   }
-    // })
 
     response.status(201).send(movies);
   } catch (err) {
@@ -80,11 +74,9 @@ async function getMoviesByIdUser(request, response) {
   }
 }
 
-
-
 module.exports = {
   getUsers,
   createUser,
   loginUser,
-  getMoviesByIdUser
+  getMoviesByIdUser,
 };
