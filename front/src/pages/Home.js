@@ -8,7 +8,7 @@ export default function Home() {
 
   function handleLogout() {
     signOut();
-    navigate('/');
+    navigate('/login');
   }
 
   return (

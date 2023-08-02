@@ -100,7 +100,7 @@ export default function Login() {
           Don’t have an account?{' '}
           <span
             className="underline"
-            onClick={() => navigate('/signUp')}
+            onClick={() => navigate('/')}
             style={{ cursor: 'pointer' }}
           >
             Create here

@@ -28,11 +28,13 @@ export default function SignUp() {
       body: JSON.stringify(values),
     });
 
-    const data = await response.json();
+    if (response.status === 201) {
+      navigate('/login');
+    }
 
-    console.log(data);
-
-    navigate('/');
+    if (response.status === 400) {
+      return alert('Email já cadastrado');
+    }
   };
 
   return (
@@ -96,7 +98,7 @@ export default function SignUp() {
             Already have an account?{' '}
             <span
               className="underline"
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/login')}
               style={{ cursor: 'pointer' }}
             >
               Login

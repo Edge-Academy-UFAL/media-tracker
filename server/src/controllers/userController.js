@@ -17,6 +17,13 @@ async function createUser(request, response) {
   const { email, nome, senha } = request.body;
   if (!email || !nome || !senha)
     return response.status(400).send({ error: 'Email, nome e senha são obrigatórios' });
+
+  const foundUser = await prisma.usuario.findUnique({
+    where: {
+      email,
+    },
+  });
+  if (foundUser) return response.status(400).send({ error: 'Email já cadastrado' });
   try {
     const hash = await bcrypt.hash(senha, 10);
     const newUser = await prisma.usuario.create({
