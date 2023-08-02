@@ -40,6 +40,11 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "axios": "^1.4.0",
+    "i": "^0.3.7",
+    "npm": "^9.8.1",
+    "react-auth-kit": "^2.12.5",
     "tailwindcss": "^3.3.3"
   }
 }

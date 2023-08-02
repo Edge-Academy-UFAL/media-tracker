@@ -1,6 +1,8 @@
-const { PrismaClient } = require("@prisma/client");
+const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const express = require("express");
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const express = require('express');
 
 async function getUsers(request, response) {
   try {
@@ -13,12 +15,15 @@ async function getUsers(request, response) {
 
 async function createUser(request, response) {
   const { email, nome, senha } = request.body;
+  if (!email || !nome || !senha)
+    return response.status(400).send({ error: 'Email, nome e senha são obrigatórios' });
   try {
+    const hash = await bcrypt.hash(senha, 10);
     const newUser = await prisma.usuario.create({
       data: {
         email,
         nome,
-        senha,
+        senha: hash,
       },
     });
     response.status(201).send(newUser);
@@ -29,18 +34,24 @@ async function createUser(request, response) {
 
 async function loginUser(request, response) {
   const { email, senha } = request.body;
-  try {
-    const user = await prisma.usuario.findUnique({
-      where: {
-        email,
-        senha,
-      },
-    });
-
-    response.status(201).send(user);
-  } catch (err) {
-    response.status(500).send({ error: err });
-  }
+  if (!email || !senha)
+    return response.status(400).send({ error: 'Email e senha são obrigatórios' });
+  const foundUser = await prisma.usuario.findUnique({
+    where: {
+      email,
+    },
+  });
+  if (!foundUser) return response.status(400).send({ error: 'Usuário não encontrado' });
+  const match = await bcrypt.compare(senha, foundUser.senha);
+  if (!match) return response.status(400).send({ error: 'Email ou senha não conferem!' });
+  const jwtToken = jwt.sign(
+    { id: foundUser.id, email: foundUser.email, nome: foundUser.nome },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: '1d',
+    }
+  );
+  response.json({ token: jwtToken });
 }
 
 async function getMoviesByIdUser(request, response) {
@@ -61,9 +72,9 @@ async function getMoviesByIdUser(request, response) {
         },
       });
 
-      movie["situacao"] = user[i].situacao;
-      movie["avaliacao"] = user[i].avaliacao;
-      movie["local_assistido"] = user[i].local_assistido;
+      movie['situacao'] = user[i].situacao;
+      movie['avaliacao'] = user[i].avaliacao;
+      movie['local_assistido'] = user[i].local_assistido;
 
       movies.push(movie);
     }
