@@ -32,7 +32,7 @@ export default function SignUp() {
 
     console.log(data);
 
-    navigate('/login');
+    navigate('/');
   };
 
   return (
@@ -96,7 +96,7 @@ export default function SignUp() {
             Already have an account?{' '}
             <span
               className="underline"
-              onClick={() => navigate('/login')}
+              onClick={() => navigate('/')}
               style={{ cursor: 'pointer' }}
             >
               Login

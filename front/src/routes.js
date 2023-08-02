@@ -15,13 +15,13 @@ export default function Rotas() {
           element={<SignUp />}
         ></Route>
         <Route
-          path="/login"
+          path="/"
           element={<Login />}
         ></Route>
         <Route
           path="/home"
           element={
-            <RequireAuth loginPath="/login">
+            <RequireAuth loginPath="/">
               <Home />
             </RequireAuth>
           }

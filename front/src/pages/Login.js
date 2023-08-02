@@ -28,15 +28,22 @@ export default function Login() {
     });
 
     const data = await response.json();
+    try {
+      if (data.error) {
+        return alert(data.error);
+      }
 
-    signIn({
-      token: data.token,
-      expiresIn: 3600,
-      tokenType: 'Bearer',
-      authState: { email: email },
-    });
+      signIn({
+        token: data.token,
+        expiresIn: 3600,
+        tokenType: 'Bearer',
+        authState: { email: email },
+      });
 
-    navigate('/home');
+      navigate('/home');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
