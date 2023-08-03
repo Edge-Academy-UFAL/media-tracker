@@ -61,6 +61,20 @@ async function loginUser(request, response) {
   response.json({ token: jwtToken });
 }
 
+async function getUserByEmail(request, response) {
+  const  email = request.params.userEmail;
+  try {
+    const user = await prisma.usuario.findUnique({
+      where: {
+        email,
+      },
+    });
+    response.status(201).send({ id: user.id, email: user.email, nome: user.nome });
+  } catch (err) {
+    response.status(500).send({ error: err });
+  }
+}
+
 async function getMoviesByIdUser(request, response) {
   const { userId } = request.params;
   try {
@@ -97,4 +111,5 @@ module.exports = {
   createUser,
   loginUser,
   getMoviesByIdUser,
+  getUserByEmail,
 };
