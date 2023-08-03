@@ -48,7 +48,7 @@ export default function Login() {
 
   return (
     <div className="flex h-full w-full flex-1 items-center flex-col justify-center px-6 py-12 lg:px-8 text-white">
-      <div className="h-full rounded-xl bg-primary-500 px-40 py-8 my-16">
+      <div className="rounded-xl bg-primary-500 px-40 py-8 my-16">
         <div className="flex flex-col items-center justify-center sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             className="mt-8 w-80"

@@ -1,7 +1,24 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 export default function SignUp() {
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState(false);
+
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const validateEmail = () => {
+    const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+    if (!emailRegex.test(email)) {
+      setEmailError('Por favor, insira um e-mail válido');
+    } else {
+      setEmailError('');
+    }
+  };
+
   const navigate = useNavigate();
 
   const handleSignUp = async (event) => {
@@ -9,9 +26,13 @@ export default function SignUp() {
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
 
     if (!name || !email || !password) {
       return alert('Preencha todos os campos');
+    }
+    if (password !== confirmPassword) {
+      return alert('As senhas não coincidem');
     }
 
     const values = {
@@ -39,7 +60,7 @@ export default function SignUp() {
 
   return (
     <div className="flex h-full w-full flex-1 items-center flex-col justify-center px-6 py-12 lg:px-8 text-white">
-      <div className="h-full rounded-xl bg-primary-500 px-40 py-8 my-16">
+      <div className="rounded-xl bg-primary-500 px-40 py-8 my-16">
         <div className="flex flex-col items-center justify-center sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             className="mt-8 w-80"
@@ -57,6 +78,7 @@ export default function SignUp() {
         >
           <input
             id="name"
+            maxLength={20}
             name="text"
             type="email"
             autoComplete="email"
@@ -73,7 +95,10 @@ export default function SignUp() {
             required
             placeholder="E-mail"
             className="block w-full rounded-xl border-0 py-5 px-4 text-white text-lg outline-none shadow-sm bg-primary-700"
+            onChange={handleEmailChange}
+            onBlur={validateEmail}
           />
+          {emailError && <p className="text-red-500 text-s">{emailError}</p>}
 
           <input
             id="password"
@@ -82,6 +107,15 @@ export default function SignUp() {
             autoComplete="current-password"
             required
             placeholder="Password"
+            className="block w-full rounded-xl border-0 py-5 px-4 text-white text-lg outline-none shadow-sm bg-primary-700"
+          />
+          <input
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            autoComplete="current-confirm-password"
+            required
+            placeholder="Confirm Password"
             className="block w-full rounded-xl border-0 py-5 px-4 text-white text-lg outline-none shadow-sm bg-primary-700"
           />
 
