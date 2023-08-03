@@ -1,17 +1,17 @@
-import React from 'react';
-import { useSignIn } from 'react-auth-kit';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { useSignIn } from "react-auth-kit";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const navigate = useNavigate();
   const signIn = useSignIn();
   const handleLogin = async (event) => {
     event.preventDefault();
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
 
     if (!email || !password) {
-      return alert('Preencha todos os campos');
+      return alert("Preencha todos os campos");
     }
 
     const values = {
@@ -19,13 +19,16 @@ export default function Login() {
       senha: password,
     };
 
-    const response = await fetch('http://localhost:8080/users/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(values),
-    });
+    const response = await fetch(
+      `http://localhost:${process.env.PORT} /users/login`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      }
+    );
 
     const data = await response.json();
     try {
@@ -36,11 +39,11 @@ export default function Login() {
       signIn({
         token: data.token,
         expiresIn: 3600,
-        tokenType: 'Bearer',
+        tokenType: "Bearer",
         authState: { email: email },
       });
 
-      navigate('/home');
+      navigate("/home");
     } catch (error) {
       console.log(error);
     }
@@ -60,11 +63,7 @@ export default function Login() {
           </h2>
         </div>
 
-        <form
-          className="space-y-6 mt-16"
-          action="#"
-          method="POST"
-        >
+        <form className="space-y-6 mt-16" action="#" method="POST">
           <input
             id="email"
             name="email"
@@ -97,11 +96,11 @@ export default function Login() {
         </form>
 
         <p className="mt-6 text-center text-xl text-white opacity-30">
-          Don’t have an account?{' '}
+          Don’t have an account?{" "}
           <span
             className="underline"
-            onClick={() => navigate('/')}
-            style={{ cursor: 'pointer' }}
+            onClick={() => navigate("/")}
+            style={{ cursor: "pointer" }}
           >
             Create here
           </span>

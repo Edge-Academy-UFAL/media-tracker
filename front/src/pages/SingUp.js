@@ -1,9 +1,9 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export default function SignUp() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
 
   const handleEmailChange = (event) => {
@@ -13,9 +13,9 @@ export default function SignUp() {
   const validateEmail = () => {
     const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
     if (!emailRegex.test(email)) {
-      setEmailError('Por favor, insira um e-mail válido');
+      setEmailError("Por favor, insira um e-mail válido");
     } else {
-      setEmailError('');
+      setEmailError("");
     }
   };
 
@@ -23,16 +23,16 @@ export default function SignUp() {
 
   const handleSignUp = async (event) => {
     event.preventDefault();
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
 
     if (!name || !email || !password) {
-      return alert('Preencha todos os campos');
+      return alert("Preencha todos os campos");
     }
     if (password !== confirmPassword) {
-      return alert('As senhas não coincidem');
+      return alert("As senhas não coincidem");
     }
 
     if (emailError) {
@@ -45,20 +45,20 @@ export default function SignUp() {
       senha: password,
     };
 
-    const response = await fetch('http://localhost:8080/users', {
-      method: 'POST',
+    const response = await fetch(`http://localhost:${process.env.PORT}/users`, {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(values),
     });
 
     if (response.status === 201) {
-      navigate('/login');
+      navigate("/login");
     }
 
     if (response.status === 400) {
-      return alert('Email já cadastrado');
+      return alert("Email já cadastrado");
     }
   };
 
@@ -76,10 +76,7 @@ export default function SignUp() {
           </h2>
         </div>
 
-        <form
-          className="space-y-6 mt-16"
-          action="#"
-        >
+        <form className="space-y-6 mt-16" action="#">
           <input
             id="name"
             maxLength={20}
@@ -133,11 +130,11 @@ export default function SignUp() {
             </button>
           </div>
           <p className="mt-6 text-center text-xl text-white opacity-30">
-            Already have an account?{' '}
+            Already have an account?{" "}
             <span
               className="underline"
-              onClick={() => navigate('/login')}
-              style={{ cursor: 'pointer' }}
+              onClick={() => navigate("/login")}
+              style={{ cursor: "pointer" }}
             >
               Login
             </span>
