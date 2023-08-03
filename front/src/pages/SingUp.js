@@ -35,6 +35,10 @@ export default function SignUp() {
       return alert('As senhas não coincidem');
     }
 
+    if (emailError) {
+      return;
+    }
+
     const values = {
       nome: name,
       email,
