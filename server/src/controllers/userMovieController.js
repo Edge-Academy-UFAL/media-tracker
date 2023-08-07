@@ -30,7 +30,30 @@ async function createFilm(request, response) {
   }
 }
 
+async function updateFilm(request, response) {
+  try {
+    const { userId, movieId } = request.params;
+
+    const { situacao } = request.body;
+
+    const film = await prisma.userMovie.updateMany({
+      where: {
+        usuarioId: userId,
+        filmeId: movieId,
+      },
+      data: {
+        situacao,
+      },
+    });
+
+    return response.status(200).send(film);
+  } catch (err) {
+    return response.status(500).send(err);
+  }
+}
+
 module.exports = {
   getFilms,
   createFilm,
+  updateFilm,
 };
