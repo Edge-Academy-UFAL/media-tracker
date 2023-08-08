@@ -45,7 +45,7 @@ export default function Home() {
 
       const email = emailObject.email;
 
-      const response = await fetch(`http://localhost:${process.env.PORT}/users/userInfo/${email}`, {
+      const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/userInfo/${email}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

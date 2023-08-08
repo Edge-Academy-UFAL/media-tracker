@@ -20,7 +20,7 @@ export default function Login() {
     };
 
     const response = await fetch(
-      `http://localhost:${process.env.PORT} /users/login`,
+      `http://localhost:${process.env.REACT_APP_PORT}/users/login`,
       {
         method: "POST",
         headers: {

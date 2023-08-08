@@ -45,7 +45,7 @@ export default function SignUp() {
       senha: password,
     };
 
-    const response = await fetch(`http://localhost:${process.env.PORT}/users`, {
+    const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

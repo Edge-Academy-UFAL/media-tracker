@@ -11,6 +11,7 @@ module.exports = {
         },
         secondary: {
           700: "#60759F",
+        },
       },
     },
   },
