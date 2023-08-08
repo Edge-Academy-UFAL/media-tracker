@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSignOut } from "react-auth-kit";
 import { useEffect } from "react";
 
@@ -31,10 +31,7 @@ export default function Home() {
 
     try {
       // Check if the decodedEmailParam is a valid JSON string
-      if (
-        !decodedEmailParam.startsWith("{") ||
-        !decodedEmailParam.endsWith("}")
-      ) {
+      if (!decodedEmailParam.startsWith("{") || !decodedEmailParam.endsWith("}")) {
         console.log("Invalid JSON string:", decodedEmailParam);
         return;
       }
@@ -48,21 +45,16 @@ export default function Home() {
 
       const email = emailObject.email;
 
-      const response = await fetch(
-        `http://localhost:${process.env.PORT}/users/userInfo/${email}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`http://localhost:${process.env.PORT}/users/userInfo/${email}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       const data = await response.json();
       if (data) {
-        document.getElementById(
-          "userInfo"
-        ).innerHTML = `Bem vindo de volta, ${data.nome}!`;
+        document.getElementById("userInfo").innerHTML = `Bem vindo de volta, ${data.nome}!`;
       } else {
         console.log("No user info found");
       }
@@ -72,18 +64,28 @@ export default function Home() {
   }
 
   return (
-    <div className="flex h-full w-full flex-1 items-center flex-col justify-center px-6 py-12 lg:px-8 text-white">
-      {/* eslint-disable-next-line jsx-a11y/heading-has-content */}
-      <h1 className="mt-6 text-center pb-12 text-white text-6xl" id="userInfo">
-        {/* User info will be displayed here */}
-      </h1>
-      <div>
-        <button
-          onClick={handleLogout}
-          className="text-center justify-center rounded-xl bg-primary-300 px-3 py-4 text-2xl font-semibold leading-6 text-white shadow-sm transition hover:brightness-105"
+    <div className="h-full flex gap-12 text-white">
+      {/* sidebar */}
+      <div className="bg-primary-500 flex flex-[3]">Sidebar</div>
+      {/* content */}
+      <div className="bg-primary-500 flex flex-col flex-[8] my-12 ml-16 mr-12 rounded-2xl shadow-2xl py-14 pl-16 pr-12 relative">
+        <div className="flex gap-10">
+          <img src="mediatracker.svg" alt="mediatracker's logo" className="h-10"></img>
+          <div className="flex bg-primary-700">
+            <div className="flex hover:bg-slate-600">Plan to watch</div>
+          </div>
+        </div>
+        <div className="flex flex-col items-center h-full justify-center font-medium">
+          <img src="/empty-icon.png" alt="" className="w-72 h-36" />
+          <h2 className="text-4xl pt-10">Your movie library is empty</h2>
+          <h3 className="italic text-white/50 text-lg pt-4">Add a movie to your collection</h3>
+        </div>
+        <Link
+          to="/search"
+          className="bg-primary-700 text-white h-20 w-20 rounded-full absolute bottom-10 right-10 shadow-lg flex items-center justify-center"
         >
-          Logout
-        </button>
+          <img src="/plus-icon.svg" alt="" className="w-10" />
+        </Link>
       </div>
     </div>
   );
