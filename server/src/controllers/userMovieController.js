@@ -52,8 +52,40 @@ async function updateFilm(request, response) {
   }
 }
 
+async function getMovieByStatus(request, response) {
+  try {
+    const { userId, status } = request.params;
+
+    const filter = await prisma.userMovie.findMany({
+      where: {
+        usuarioId: userId,
+        situacao: status,
+      },
+    });
+
+    var movies = [];
+
+    for (let i = 0; i < filter.length; i++) {
+      const movie = await prisma.filme.findUnique({
+        where: {
+          id: filter[i].filmeId,
+        },
+      });
+      movie["situacao"] = filter[i].situacao;
+      movie["avaliacao"] = filter[i].avaliacao;
+      movie["local_assistido"] = filter[i].local_assistido;
+
+      movies.push(movie);
+    }
+
+    return response.status(200).send(movies);
+  } catch (e) {
+    return response.status(500).send(err);
+  }
+}
 module.exports = {
   getFilms,
   createFilm,
   updateFilm,
+  getMovieByStatus,
 };
