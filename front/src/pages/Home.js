@@ -4,7 +4,8 @@ import { useSignOut } from "react-auth-kit";
 import { useEffect } from "react";
 
 import MovieFilter from "../components/Home/MovieFilter";
-import Sidebar from "../components/Home/Sidebar/Sidebar";
+import Sidebar from "../components/Sidebar/Sidebar";
+import Body from "../components/Body";
 
 export default function Home() {
   useEffect(() => {
@@ -49,7 +50,7 @@ export default function Home() {
     <div className="h-full flex gap-1">
       <Sidebar handleLogout={handleLogout} />
       {/* content */}
-      <div className="bg-primary-500 flex flex-col flex-[8] my-8 ml-14 mr-8 rounded-2xl shadow-2xl py-12 pl-14 pr-8 relative text-white">
+      <Body>
         <div className="flex gap-10">
           <img src="mediatracker.svg" alt="mediatracker's logo" className="h-10"></img>
           <MovieFilter />
@@ -65,7 +66,7 @@ export default function Home() {
         >
           <img src="/plus-icon.svg" alt="" className="w-8" />
         </Link>
-      </div>
+      </Body>
     </div>
   );
 }
