@@ -1,9 +1,9 @@
-export default function Tab({ children, color, active }) {
+export default function Tab({ children, hover, color, active }) {
   return (
     <div
-      className={`flex my-2 py-2 px-5 flex-1 justify-center hover:${color} ${
+      className={`flex my-2 py-2 px-2 flex-1 justify-center ${hover} ${
         active && color
-      } transition-colors rounded-xl cursor-pointer`}
+      } transition duration-300 ease-in-out rounded-xl cursor-pointer`}
     >
       {children}
     </div>
