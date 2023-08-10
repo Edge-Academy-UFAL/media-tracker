@@ -2,65 +2,74 @@ import React from "react";
 import { useSignIn } from "react-auth-kit";
 import { useNavigate } from "react-router-dom";
 
+import { useRef } from "react";
+import { Toast } from "primereact/toast";
+
+//theme
+import "primereact/resources/themes/lara-light-indigo/theme.css";
+//core
+import "primereact/resources/primereact.min.css";
+
 export default function Login() {
   const navigate = useNavigate();
   const signIn = useSignIn();
+  const toast = useRef(null);
+
   const handleLogin = async (event) => {
     event.preventDefault();
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
     if (!email || !password) {
-      return alert("Preencha todos os campos");
-    }
+      toast.current.show({
+        severity: "error",
+        summary: "Erro",
+        detail: "Por favor, preencha todos os campos",
+        life: 8000,
+      });
+    } else {
+      toast.current.clear();
 
-    const values = {
-      email,
-      senha: password,
-    };
+      const values = {
+        email,
+        senha: password,
+      };
 
-    const response = await fetch(
-      `http://localhost:${process.env.REACT_APP_PORT}/users/login`,
-      {
+      const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(values),
-      }
-    );
-
-    const data = await response.json();
-    try {
-      if (data.error) {
-        return alert(data.error);
-      }
-
-      signIn({
-        token: data.token,
-        expiresIn: 3600,
-        tokenType: "Bearer",
-        authState: { email: email },
       });
+      const data = await response.json();
 
-      navigate("/home");
-    } catch (error) {
-      console.log(error);
+      if (data.error) {
+        toast.current.show({
+          severity: "error",
+          summary: "Erro",
+          detail: "E-mail ou senha incorretos",
+          life: 8000,
+        });
+      } else {
+        toast.current.clear();
+        signIn({
+          token: data.token,
+          expiresIn: 3600,
+          tokenType: "Bearer",
+          authState: { name: data.name },
+        });
+        navigate("/home");
+      }
     }
   };
-
   return (
     <div className="flex h-full w-full flex-1 items-center flex-col justify-center px-6 py-12 lg:px-8 text-white">
       <div className="rounded-xl bg-primary-500 px-40 py-8 my-16">
+        <Toast ref={toast} />
         <div className="flex flex-col items-center justify-center sm:mx-auto sm:w-full sm:max-w-sm">
-          <img
-            className="mt-8 w-80"
-            src="./mediatracker.svg"
-            alt="mediatracker's logo"
-          ></img>
-          <h2 className="mt-24 text-center text-4xl font-bold leading-9 tracking-tight">
-            Sign in to your account
-          </h2>
+          <img className="mt-8 w-80" src="./mediatracker.svg" alt="mediatracker's logo"></img>
+          <h2 className="mt-24 text-center text-4xl font-bold leading-9 tracking-tight">Sign in to your account</h2>
         </div>
 
         <form className="space-y-6 mt-16" action="#" method="POST">
@@ -97,11 +106,7 @@ export default function Login() {
 
         <p className="mt-6 text-center text-xl text-white opacity-30">
           Don’t have an account?{" "}
-          <span
-            className="underline"
-            onClick={() => navigate("/")}
-            style={{ cursor: "pointer" }}
-          >
+          <span className="underline" onClick={() => navigate("/")} style={{ cursor: "pointer" }}>
             Create here
           </span>
         </p>

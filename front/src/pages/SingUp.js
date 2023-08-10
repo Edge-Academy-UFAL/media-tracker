@@ -1,10 +1,17 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { Toast } from "primereact/toast";
+
+//theme
+import "primereact/resources/themes/lara-light-indigo/theme.css";
+//core
+import "primereact/resources/primereact.min.css";
 
 export default function SignUp() {
+  const toast = useRef(null);
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState(false);
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -13,13 +20,16 @@ export default function SignUp() {
   const validateEmail = () => {
     const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
     if (!emailRegex.test(email)) {
-      setEmailError("Por favor, insira um e-mail válido");
+      toast.current.show({
+        severity: "error",
+        summary: "Erro",
+        detail: "Por favor, insira um e-mail válido",
+        life: 8000,
+      });
     } else {
-      setEmailError("");
+      toast.current.clear();
     }
   };
-
-  const navigate = useNavigate();
 
   const handleSignUp = async (event) => {
     event.preventDefault();
@@ -29,51 +39,58 @@ export default function SignUp() {
     const confirmPassword = document.getElementById("confirmPassword").value;
 
     if (!name || !email || !password) {
-      return alert("Preencha todos os campos");
-    }
-    if (password !== confirmPassword) {
-      return alert("As senhas não coincidem");
-    }
+      toast.current.show({
+        severity: "error",
+        summary: "Erro",
+        detail: "Por favor, preencha todos os campos",
+        life: 8000,
+      });
+    } else {
+      toast.current.clear();
+      if (password !== confirmPassword) {
+        toast.current.show({
+          severity: "error",
+          summary: "Erro",
+          detail: "As senhas não coincidem",
+          life: 8000,
+        });
+      } else {
+        toast.current.clear();
+        const values = {
+          nome: name,
+          email,
+          senha: password,
+        };
 
-    if (emailError) {
-      return;
-    }
-
-    const values = {
-      nome: name,
-      email,
-      senha: password,
-    };
-
-    const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    });
-
-    if (response.status === 201) {
-      navigate("/login");
-    }
-
-    if (response.status === 400) {
-      return alert("Email já cadastrado");
+        const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        });
+        const data = await response.json();
+        if (data.error) {
+          toast.current.show({
+            severity: "error",
+            summary: "Erro",
+            detail: data.error,
+            life: 8000,
+          });
+        } else {
+          navigate("/login");
+        }
+      }
     }
   };
 
   return (
     <div className="flex h-full w-full flex-1 items-center flex-col justify-center px-6 py-12 lg:px-8 text-white">
       <div className="rounded-xl bg-primary-500 px-40 py-8 my-16">
+        <Toast ref={toast} />
         <div className="flex flex-col items-center justify-center sm:mx-auto sm:w-full sm:max-w-sm">
-          <img
-            className="mt-8 w-80"
-            src="./mediatracker.svg"
-            alt="mediatracker's logo"
-          ></img>
-          <h2 className="mt-24 text-center text-4xl font-bold leading-9 tracking-tight">
-            Create your account
-          </h2>
+          <img className="mt-8 w-80" src="./mediatracker.svg" alt="mediatracker's logo"></img>
+          <h2 className="mt-24 text-center text-4xl font-bold leading-9 tracking-tight">Create your account</h2>
         </div>
 
         <form className="space-y-6 mt-16" action="#">
@@ -99,7 +116,6 @@ export default function SignUp() {
             onChange={handleEmailChange}
             onBlur={validateEmail}
           />
-          {emailError && <p className="text-red-500 text-s">{emailError}</p>}
 
           <input
             id="password"
@@ -131,11 +147,7 @@ export default function SignUp() {
           </div>
           <p className="mt-6 text-center text-xl text-white opacity-30">
             Already have an account?{" "}
-            <span
-              className="underline"
-              onClick={() => navigate("/login")}
-              style={{ cursor: "pointer" }}
-            >
+            <span className="underline" onClick={() => navigate("/login")} style={{ cursor: "pointer" }}>
               Login
             </span>
           </p>

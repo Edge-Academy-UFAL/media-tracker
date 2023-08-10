@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useSignOut } from "react-auth-kit";
 import { useEffect } from "react";
 import { FaRightFromBracket, FaCompass, FaMagnifyingGlass, FaClapperboard } from "react-icons/fa6";
@@ -8,62 +8,41 @@ import MovieFilter from "../components/Home/MovieFilter";
 
 export default function Home() {
   useEffect(() => {
-    showInfo(); // Chamando a função showInfo assim que a página for carregada
+    showInfo();
   }, []);
   const signOut = useSignOut();
-  const navigate = useNavigate();
-  // const cookies = useCookies();
-  function handleLogout() {
-    signOut();
-    navigate("/login");
-  }
 
   async function showInfo() {
-    // URL-encoded email parameter
     const cookie = document.cookie;
-    var field = cookie.split(";");
-    var encodedEmailParam = field[3]?.split("=")[1];
+    var fields = cookie.split(";");
+    var token = null;
 
-    // Parse the decoded JSON string into an object
-    if (!encodedEmailParam) {
-      console.log("Encoded email parameter not found in the cookie");
-      return;
+    for (var i = 0; i < fields.length; i++) {
+      var f = fields[i].split("=");
+      if (f[0].trim() === "_auth") {
+        token = f[1];
+        break;
+      }
     }
 
-    const decodedEmailParam = decodeURIComponent(encodedEmailParam);
-
-    try {
-      // Check if the decodedEmailParam is a valid JSON string
-      if (!decodedEmailParam.startsWith("{") || !decodedEmailParam.endsWith("}")) {
-        console.log("Invalid JSON string:", decodedEmailParam);
-        return;
-      }
-
-      const emailObject = JSON.parse(decodedEmailParam);
-
-      if (!emailObject || !emailObject.email) {
-        console.log("Invalid email object or email not found");
-        return;
-      }
-
-      const email = emailObject.email;
-
-      const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/userInfo/${email}`, {
-        method: "GET",
+    if (token) {
+      const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/${token}`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
       });
 
       const data = await response.json();
-      if (data) {
-        document.getElementById("userInfo").innerHTML = `Bem vindo de volta, ${data.nome}!`;
-      } else {
-        console.log("No user info found");
+      if (data.nome) {
+        document.getElementById("nomeTela").innerHTML = data.nome;
       }
-    } catch (error) {
-      console.log(error);
     }
+  }
+
+  function handleLogout() {
+    signOut();
+    window.location.reload();
   }
 
   return (
@@ -73,7 +52,9 @@ export default function Home() {
         <div className="flex flex-1 justify-start items-start mt-12 mx-4">
           <div className="flex items-center bg-primary-700 w-full py-4 rounded-xl shadow-xl shadow-primary-700/30 gap-4">
             <div className="h-14 w-14 rounded-full bg-slate-600 ml-10"></div>
-            <span className="text-2xl font-semibold ml-3">João Lucas</span>
+            <span className="text-2xl font-semibold ml-3" id="nomeTela">
+              {/*  */}
+            </span>
           </div>
         </div>
         <div className="flex flex-col gap-8 flex-2 justify-center items-center mx-4">
@@ -90,7 +71,7 @@ export default function Home() {
             <span className="text-2xl font-semibold ml-3">Explore</span>
           </div>
         </div>
-        <div className="flex flex-1 justify-center items-end mb-12 mx-4">
+        <div className="flex flex-1 justify-center items-end mb-12 mx-4 cursor-pointer" onClick={handleLogout}>
           <div className="flex items-center bg-primary-700 w-full py-6 rounded-xl shadow-xl shadow-primary-700/30 gap-4">
             <FaRightFromBracket size={36} color="#C53434" className="ml-10" />
             <span className="text-2xl font-semibold ml-3 text-[#C53434]">Logout</span>

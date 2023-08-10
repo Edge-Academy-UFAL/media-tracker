@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/', userController.getUsers);
 router.post('/', userController.createUser);
 router.post('/login', userController.loginUser);
-router.get('/userInfo/:userEmail', userController.getUserByEmail);
+router.post('/:token', userController.getInfoFromToken);
 router.get('/getMovies/:userId', userController.getMoviesByIdUser);
 
 module.exports = router;
