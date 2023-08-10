@@ -1,5 +1,7 @@
 export default function Body({ children }) {
   return (
-    <div className="flex flex-col items-center justify-center flex-1 w-full h-full bg-primary-800">{children}</div>
+    <div className="bg-primary-500 flex flex-col flex-[8] my-12 ml-16 mr-12 rounded-2xl shadow-2xl py-14 pl-16 pr-12 relative text-white">
+      {children}
+    </div>
   );
 }
