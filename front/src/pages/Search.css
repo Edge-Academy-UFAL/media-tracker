@@ -1,0 +1,15 @@
+/* No seu arquivo de estilos */
+.custom-input-style {
+    background-color: #1A202C;
+    border-radius: 15px;
+    font-family: Inter;
+    font-size: 26px;
+    font-style: italic;
+    font-weight: 500;
+    line-height: normal;
+    color: rgba(255, 255, 255, 0.50);
+    border: none;
+    width: 45rem;
+    height: 4rem;
+  }
+  

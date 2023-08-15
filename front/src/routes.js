@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-d
 import { useIsAuthenticated } from "react-auth-kit";
 
 import SignUp from "./pages/SingUp";
+import Search from "./pages/Search";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Error from "./pages/Error";
@@ -20,6 +21,7 @@ export default function Rotas() {
         <Route path="/" element={<SignUp />}></Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/home" element={<PrivateRoute Component={Home} />}></Route>
+        <Route path="/search" element={<PrivateRoute Component={Search} />}></Route>
         <Route path="*" element={<Error />}></Route>
       </Routes>
     </Router>
