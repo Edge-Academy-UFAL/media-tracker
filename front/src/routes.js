@@ -5,6 +5,7 @@ import { useIsAuthenticated } from "react-auth-kit";
 import SignUp from "./pages/SingUp";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
+import Error from "./pages/Error";
 
 const PrivateRoute = ({ Component }) => {
   const isAuthenticated = useIsAuthenticated();
@@ -19,6 +20,7 @@ export default function Rotas() {
         <Route path="/" element={<SignUp />}></Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/home" element={<PrivateRoute Component={Home} />}></Route>
+        <Route path="*" element={<Error />}></Route>
       </Routes>
     </Router>
   );
