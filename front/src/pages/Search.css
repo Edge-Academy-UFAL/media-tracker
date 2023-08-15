@@ -9,7 +9,48 @@
     line-height: normal;
     color: rgba(255, 255, 255, 0.50);
     border: none;
-    width: 45rem;
+    max-width: 60%;
+    width: 55rem;
     height: 4rem;
   }
   
+  .image-container {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: self-end;    
+    justify-content: center;
+    gap: 2rem; 
+    margin: 2.5rem;
+    overflow-y: scroll;
+  }
+  
+  .image-item {
+    border-radius: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .image-item > img{
+    border-radius: 15px;
+    width: 200px;
+    height: 290px;
+  }
+
+
+::-webkit-scrollbar {
+  width: 8px; 
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #b8b7b7; 
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #1A202C;
+}
+
+::-webkit-scrollbar-vertical {
+  width: 10px;
+}
+

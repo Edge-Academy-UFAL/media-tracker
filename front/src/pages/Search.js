@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import Sidebar from "../components/Sidebar/Sidebar";
 import Body from "../components/Body";
@@ -11,9 +11,31 @@ import "./Search.css";
 import "primeicons/primeicons.css";
 
 export default function Search() {
+  const [data, setData] = useState({});
+  const [title, setTitle] = useState("");
+
   useEffect(() => {
     showInfo();
   }, []);
+
+  useEffect(() => {
+    async function getData() {
+      const received = await fetch(`https://api.themoviedb.org/3/search/movie?query=${title}`, {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${process.env.REACT_APP_TOKEN}`,
+        },
+      });
+
+      const response = await received.json();
+      console.log(response);
+      setData(response);
+    }
+
+    getData();
+  }, [title]);
+
   async function showInfo() {
     const cookie = document.cookie;
     var fields = cookie.split(";");
@@ -45,15 +67,29 @@ export default function Search() {
     <div className="h-full flex gap-1">
       <Sidebar />
       <Body>
-        <div className="flex gap-14">
+        <div className="flex items-center gap-28 ">
           <img src="/mediatracker.svg" alt="" className="h-10" />
-          <span className="p-input-icon-left">
-            <i className="pi pi-search" />
-            <InputText placeholder="Search..." className="p-inputtext-lg custom-input-style" />
-          </span>
+          <div className="flex-grow">
+            <span className="p-input-icon-left">
+              <i className="pi pi-search" />
+              <InputText
+                placeholder="Search..."
+                className="p-inputtext-lg custom-input-style"
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </span>
+          </div>
         </div>
-        <div className="flex items-center h-full justify-center text-4xl text-gray-400 italic">
-          <h3>Start typing to search a movie you like</h3>
+        <div className="image-container">
+          {data.results?.map((item) => (
+            <div key={item.id} className="image-item">
+              {item.poster_path && (
+                <>
+                  <img src={`https://image.tmdb.org/t/p/w500${item.poster_path}`} alt={item.title} />
+                </>
+              )}
+            </div>
+          ))}
         </div>
       </Body>
     </div>
