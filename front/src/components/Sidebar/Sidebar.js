@@ -7,7 +7,7 @@ export default function Sidebar({ handleLogout }) {
   const url = window.location.pathname;
 
   return (
-    <div className="bg-primary-500 flex flex-[3] flex-col">
+    <div className="bg-primary-500 flex flex-[3] flex-col w-full">
       <UserTab />
       <div className="flex flex-col gap-8 flex-2 justify-center items-center mx-4">
         <SidebarTab to="/home" active={url === "/home"}>
