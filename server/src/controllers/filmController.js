@@ -1,6 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
+const { redis } = require("../lib/cache");
 const prisma = new PrismaClient();
-const express = require("express");
 
 async function getFilms(request, response) {
   try {
@@ -43,22 +43,31 @@ async function createFilm(request, response) {
 
 async function getFilme(request, response) {
   try {
-    const { title } = request.params;
+    const { id } = request.params;
 
-    const received = await fetch(
-      `https://api.themoviedb.org/3/search/movie?query=${title}`,
-      {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${process.env.TOKEN_TMDB_API}`,
-        },
-      }
-    );
+    const cachedFilm = await redis.get(id);
 
-    const filmData = await received.json();
+    if (cachedFilm) {
+      return response.json(JSON.parse(cachedFilm));
+    }
 
-    return response.status(201).send(filmData.results);
+    const url = `https://api.themoviedb.org/3/movie/${id}?language=en-US`;
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${process.env.TOKEN_TMDB_API}`,
+      },
+    };
+
+    const fetchResponse = await fetch(url, options);
+    const filmData = await fetchResponse.json();
+
+    // console.log(filmData);
+
+    await redis.set(id, JSON.stringify(filmData));
+
+    return response.json(filmData); // Envia os dados da API como resposta
   } catch (err) {
     response.status(500).send(err);
   }

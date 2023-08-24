@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.get("/", filmController.getFilms);
 router.post("/", filmController.createFilm);
-router.get("/:title", filmController.getFilme);
+router.get("/searchById/:id", filmController.getFilme);
 
 module.exports = router;
