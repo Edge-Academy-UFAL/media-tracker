@@ -9,20 +9,16 @@
   line-height: normal;
   color: rgba(255, 255, 255, 0.5);
   border: none;
-  max-width: 60%;
-  width: 55rem;
   height: 4rem;
+  padding-left: 50px !important;
 }
 
 .image-container {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
-  align-items: self-end;
-  justify-content: start;
-  gap: 2rem;
-  margin: 2.5rem;
-  overflow-y: scroll;
+  gap: 3.2rem;
+  margin: 2.2rem;
 }
 
 .image-item {
@@ -32,8 +28,8 @@
 
 .image-item > img {
   border-radius: 15px;
-  width: 200px;
-  height: 290px;
+  width: 235px;
+  height: 350px;
 }
 
 ::-webkit-scrollbar {

@@ -9,10 +9,12 @@ import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import "./Search.css";
 import "primeicons/primeicons.css";
+import { useSignOut } from "react-auth-kit";
 
 export default function Search() {
   const [data, setData] = useState({});
   const [title, setTitle] = useState("");
+  const signOut = useSignOut();
 
   useEffect(() => {
     showInfo();
@@ -29,7 +31,6 @@ export default function Search() {
       });
 
       const response = await received.json();
-      console.log(response);
       setData(response);
     }
 
@@ -63,33 +64,50 @@ export default function Search() {
     }
   }
 
+  function handleLogout() {
+    signOut();
+    window.location.reload();
+  }
+
   return (
     <div className="h-full flex gap-1">
-      <Sidebar />
+      <Sidebar handleLogout={handleLogout} />
       <Body>
-        <div className="flex items-center gap-28 ">
-          <img src="/mediatracker.svg" alt="" className="h-10" />
-          <div className="flex-grow">
-            <span className="p-input-icon-left">
-              <i className="pi pi-search" />
+        <div className="flex gap-24">
+          <img src="mediatracker.svg" alt="mediatracker's logo" className="h-10 flex-1"></img>
+          <div className="w-full mr-12">
+            <span className="p-input-icon-left w-full">
+              <i className="pi pi-search px-1" />
               <InputText
                 placeholder="Search..."
-                className="p-inputtext-lg custom-input-style"
+                className="p-inputtext-lg custom-input-style w-full"
                 onChange={(e) => setTitle(e.target.value)}
               />
             </span>
           </div>
         </div>
-        <div className="image-container">
-          {data.results?.map((item) => (
-            <div key={item.id} className="image-item">
-              {item.poster_path && (
-                <>
-                  <img src={`https://image.tmdb.org/t/p/w500${item.poster_path}`} alt={item.title} />
-                </>
-              )}
+        <div
+          className={`image-container ${
+            data.results?.length > 0
+              ? "justify-start self-end overflow-y-scroll"
+              : "items-center justify-center h-full overflow-hidden"
+          }`}
+        >
+          {data.results?.length ? (
+            data.results?.map((item) => (
+              <div key={item.id} className="image-item">
+                {item.poster_path && (
+                  <>
+                    <img src={`https://image.tmdb.org/t/p/w500${item.poster_path}`} alt={item.title} />
+                  </>
+                )}
+              </div>
+            ))
+          ) : (
+            <div className="flex items-center justify-center text-2xl font-semibold text-white/50 italic">
+              Start typing to search a movie you like
             </div>
-          ))}
+          )}
         </div>
       </Body>
     </div>
