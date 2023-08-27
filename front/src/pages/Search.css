@@ -17,19 +17,19 @@
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
-  gap: 3.2rem;
-  margin: 2.2rem;
+  gap: 4rem;
+  margin: 3.4rem 3rem 0 0;
 }
 
 .image-item {
   border-radius: 12px;
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
 }
 
 .image-item > img {
   border-radius: 15px;
-  width: 235px;
-  height: 350px;
+  width: 250px;
+  height: 370px;
 }
 
 ::-webkit-scrollbar {

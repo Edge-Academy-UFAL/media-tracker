@@ -10,6 +10,10 @@ import "primereact/resources/primereact.min.css";
 import "./Search.css";
 import "primeicons/primeicons.css";
 import { useSignOut } from "react-auth-kit";
+import { Link } from "react-router-dom";
+
+import mediatracker from "../assets/mediatracker.svg";
+import noImageAvailable from "../assets/no-image-available.png";
 
 export default function Search() {
   const [data, setData] = useState({});
@@ -74,7 +78,7 @@ export default function Search() {
       <Sidebar handleLogout={handleLogout} />
       <Body>
         <div className="flex gap-24">
-          <img src="mediatracker.svg" alt="mediatracker's logo" className="h-10 flex-1"></img>
+          <img src={mediatracker} alt="mediatracker's logo" className="h-10 flex-1"></img>
           <div className="w-full mr-12">
             <span className="p-input-icon-left w-full">
               <i className="pi pi-search px-1" />
@@ -89,19 +93,25 @@ export default function Search() {
         <div
           className={`image-container ${
             data.results?.length > 0
-              ? "justify-start self-end overflow-y-scroll"
+              ? "justify-start self-start overflow-y-auto"
               : "items-center justify-center h-full overflow-hidden"
           }`}
         >
           {data.results?.length ? (
             data.results?.map((item) => (
-              <div key={item.id} className="image-item">
-                {item.poster_path && (
+              <Link
+                to={`/movie/${item.id}`}
+                key={item.id}
+                className="image-item transition-opacity ease-in duration-100 hover:opacity-40"
+              >
+                {item.poster_path ? (
                   <>
                     <img src={`https://image.tmdb.org/t/p/w500${item.poster_path}`} alt={item.title} />
                   </>
+                ) : (
+                  <img src={noImageAvailable} alt={item.title} />
                 )}
-              </div>
+              </Link>
             ))
           ) : (
             <div className="flex items-center justify-center text-2xl font-semibold text-white/50 italic">
