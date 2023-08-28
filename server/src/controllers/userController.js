@@ -1,112 +1,137 @@
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const express = require('express');
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const express = require("express");
 
 async function getUsers(request, response) {
-  try {
-    const users = await prisma.usuario.findMany();
-    response.status(200).send(users);
-  } catch (err) {
-    response.status(500).send({ err });
-  }
+    try {
+        const users = await prisma.user.findMany();
+        response.status(200).send(users);
+    } catch (err) {
+        response.status(500).send({ error: err });
+    }
 }
 
 async function createUser(request, response) {
-  const { email, nome, senha } = request.body;
-  if (!email || !nome || !senha)
-    return response.status(400).send({ error: 'Email, nome e senha são obrigatórios' });
+    const { email, name, password } = request.body;
+    if (!email || !name || !password) return response.status(400).send({ error: "Missing required information" });
 
-  const foundUser = await prisma.usuario.findUnique({
-    where: {
-      email,
-    },
-  });
-  if (foundUser) return response.status(400).send({ error: 'Email já cadastrado' });
-  try {
-    const hash = await bcrypt.hash(senha, 10);
-    const newUser = await prisma.usuario.create({
-      data: {
-        email,
-        nome,
-        senha: hash,
-      },
+    const foundUser = await prisma.user.findUnique({
+        where: {
+            email,
+        },
     });
-    response.status(201).send(newUser);
-  } catch (err) {
-    response.status(500).send({ error: err });
-  }
+    if (foundUser) return response.status(400).send({ error: "User with this email already exists" });
+    try {
+        const hash = await bcrypt.hash(password, 10);
+        const newUser = await prisma.user.create({
+            data: {
+                email,
+                name,
+                passwrod: hash,
+            },
+        });
+        response.status(201).send(newUser);
+    } catch (err) {
+        response.status(500).send({ error: err });
+    }
 }
 
 async function loginUser(request, response) {
-  const { email, senha } = request.body;
-  if (!email || !senha)
-    return response.status(400).send({ error: 'Email e senha são obrigatórios' });
-  const foundUser = await prisma.usuario.findUnique({
-    where: {
-      email,
-    },
-  });
-  if (!foundUser) return response.status(400).send({ error: 'Usuário não encontrado' });
-  const match = await bcrypt.compare(senha, foundUser.senha);
-  if (!match) return response.status(400).send({ error: 'Email ou senha não conferem!' });
-  const jwtToken = jwt.sign(
-    { id: foundUser.id, email: foundUser.email, nome: foundUser.nome },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: '1d',
-    }
-  );
-  response.json({ token: jwtToken });
-}
+    const { email, password } = request.body;
+    if (!email || !password) return response.status(400).send({ error: "Missing required information" });
+    const foundUser = await prisma.user.findUnique({
+        where: {
+            email,
+        },
+    });
+    if (!foundUser) return response.status(400).send({ error: "User with this email does not exist" });
 
-async function getInfoFromToken(request, response) {
-  const { token } = request.params;
-  if (!token) return response.status(400).json({ error: 'Missing fields' });
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    response.status(200).json(decoded);
-  } catch (err) {
-    response.status(500).json({ error: err });
-  }
-}
+    const match = await bcrypt.compare(password, foundUser.password);
 
-async function getMoviesByIdUser(request, response) {
-  const { userId } = request.params;
-  try {
-    const user = await prisma.userMovie.findMany({
-      where: {
-        usuarioId: userId,
-      },
+    if (!match) return response.status(400).send({ error: "Invalid password" });
+
+    const jwtToken = jwt.sign({ id: foundUser.id, email: foundUser.email, name: foundUser.name }, process.env.JWT_SECRET, {
+        expiresIn: "1d",
     });
 
-    var movies = [];
+    response.json({ token: jwtToken });
+}
 
-    for (let i = 0; i < user.length; i++) {
-      const movie = await prisma.filme.findUnique({
-        where: {
-          id: user[i].filmeId,
-        },
-      });
+async function getMovies(request, response) {
+    const { userId } = request.user;
+    const { status } = request.body;
 
-      movie['situacao'] = user[i].situacao;
-      movie['avaliacao'] = user[i].avaliacao;
-      movie['local_assistido'] = user[i].local_assistido;
+    try {
+        if (!status) {
+            const movies = await prisma.movie.findMany({
+                where: {
+                    userId,
+                },
+            });
+            response.status(201).send(movies);
+        }
 
-      movies.push(movie);
+        const movies = await prisma.movie.findMany({
+            where: {
+                userId,
+                status,
+            },
+        });
+
+        response.status(201).send(movies);
+    } catch (err) {
+        response.status(500).send({ error: err });
     }
+}
 
-    response.status(201).send(movies);
-  } catch (err) {
-    response.status(500).send({ error: err });
-  }
+async function addMovie(request, response) {
+    const { status } = request.body;
+    const { userId } = request.user;
+    const { movieId } = request.params;
+    try {
+        const movie = await prisma.movie.create({
+            data: {
+                status,
+                userId,
+                movieId,
+            },
+        });
+        response.status(201).send(movie);
+    } catch (err) {
+        console.log(err);
+        response.status(500).send({ error: "Internal server error" });
+    }
+}
+
+async function updateStatus(request, response) {
+    try {
+        const { movieId } = request.params;
+        const { status } = request.body;
+        const { userId } = request.user;
+
+        const movie = await prisma.movie.update({
+            where: {
+                userId,
+                movieId,
+            },
+            data: {
+                status,
+            },
+        });
+
+        return response.status(200).send(movie);
+    } catch (err) {
+        return response.status(500).send(err);
+    }
 }
 
 module.exports = {
-  getUsers,
-  createUser,
-  loginUser,
-  getMoviesByIdUser,
-  getInfoFromToken,
+    getUsers,
+    createUser,
+    loginUser,
+    getMovies,
+    addMovie,
+    updateStatus,
 };

@@ -8,6 +8,8 @@ import "primereact/resources/themes/lara-light-indigo/theme.css";
 //core
 import "primereact/resources/primereact.min.css";
 
+import mediatracker from "../assets/mediatracker.svg";
+
 export default function SignUp() {
   const toast = useRef(null);
   const navigate = useNavigate();
@@ -89,7 +91,7 @@ export default function SignUp() {
       <div className="rounded-xl bg-primary-500 px-40 py-6">
         <Toast ref={toast} />
         <div className="flex flex-col items-center justify-center sm:mx-auto sm:w-full sm:max-w-sm">
-          <img className="mt-2 w-80" src="./mediatracker.svg" alt="mediatracker's logo"></img>
+          <img className="mt-2 w-80" src={mediatracker} alt="mediatracker's logo"></img>
           <h2 className="mt-16 text-center text-4xl font-bold leading-9 tracking-tight">Create your account</h2>
         </div>
 

@@ -7,6 +7,7 @@ import Search from "./pages/Search";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Error from "./pages/Error";
+import Movie from "./pages/Movie";
 
 const PrivateRoute = ({ Component }) => {
   const isAuthenticated = useIsAuthenticated();
@@ -22,6 +23,7 @@ export default function Rotas() {
         <Route path="/login" element={<Login />}></Route>
         <Route path="/home" element={<PrivateRoute Component={Home} />}></Route>
         <Route path="/search" element={<PrivateRoute Component={Search} />}></Route>
+        <Route path="/movie/:id" element={<PrivateRoute Component={Movie} />}></Route>
         <Route path="*" element={<Error />}></Route>
       </Routes>
     </Router>

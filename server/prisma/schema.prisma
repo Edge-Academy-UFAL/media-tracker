@@ -7,35 +7,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Usuario {
-  id        String      @id @default(uuid())
-  email     String      @unique
-  nome      String
-  senha     String
-  UserMovie UserMovie[]
+model User {
+  id       String  @id @default(uuid())
+  email    String  @unique
+  name     String
+  password String
+  movies   Movie[]
 }
 
-model Filme {
-  id             String      @id @default(uuid())
-  tmdbId         Int         @unique
-  original_title String
-  overview       String
-  popularity     Float
-  poster_path    String
-  release_date   String
-  vote_average   Float
-  vote_count     Int
-  UserMovie      UserMovie[]
-}
+model Movie {
+  id               String
+  status           String
+  rating           Int?
+  watched_location String?
+  user             User    @relation(fields: [userId], references: [id])
+  userId           String
 
-model UserMovie {
-  situacao        String
-  avaliacao       Int?
-  local_assistido String?
-  usuarioId       String
-  filmeId         String
-  filme           Filme   @relation(fields: [filmeId], references: [id])
-  usuario         Usuario @relation(fields: [usuarioId], references: [id])
-
-  @@id([usuarioId, filmeId])
+  @@id([userId])
 }
