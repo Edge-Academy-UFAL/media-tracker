@@ -25,8 +25,8 @@ export default function Login() {
     if (!email || !password) {
       toast.current.show({
         severity: "error",
-        summary: "Erro",
-        detail: "Por favor, preencha todos os campos",
+        summary: "Error",
+        detail: "Please fill all the fields",
         life: 8000,
       });
     } else {
@@ -34,7 +34,7 @@ export default function Login() {
 
       const values = {
         email,
-        senha: password,
+        password,
       };
 
       const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/login`, {
@@ -49,8 +49,8 @@ export default function Login() {
       if (data.error) {
         toast.current.show({
           severity: "error",
-          summary: "Erro",
-          detail: "E-mail ou senha incorretos",
+          summary: "Error",
+          detail: "Invalid email or password",
           life: 8000,
         });
       } else {

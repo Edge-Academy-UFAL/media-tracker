@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useSignOut } from "react-auth-kit";
-import { useEffect } from "react";
 
 import MovieFilter from "../components/Home/MovieFilter";
 import Sidebar from "../components/Sidebar/Sidebar";
@@ -12,38 +11,7 @@ import emptyIcon from "../assets/empty-icon.png";
 import plusIcon from "../assets/plus-icon.svg";
 
 export default function Home() {
-  useEffect(() => {
-    showInfo();
-  }, []);
   const signOut = useSignOut();
-
-  async function showInfo() {
-    const cookie = document.cookie;
-    var fields = cookie.split(";");
-    var token = null;
-
-    for (var i = 0; i < fields.length; i++) {
-      var f = fields[i].split("=");
-      if (f[0].trim() === "_auth") {
-        token = f[1];
-        break;
-      }
-    }
-
-    if (token) {
-      const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/${token}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await response.json();
-      if (data.nome) {
-        document.getElementById("nomeTela").innerHTML = data.nome;
-      }
-    }
-  }
 
   function handleLogout() {
     signOut();

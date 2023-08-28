@@ -32,14 +32,28 @@ export default function Movie() {
 
   useEffect(() => {
     async function getMovie() {
-      const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/films/searchById/${movieId}`, {
+      const cookie = document.cookie;
+      var fields = cookie.split(";");
+      var token = null;
+
+      for (var i = 0; i < fields.length; i++) {
+        var f = fields[i].split("=");
+        if (f[0].trim() === "_auth") {
+          token = f[1];
+          break;
+        }
+      }
+
+      const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/movies/searchById/${movieId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
 
       const data = await response.json();
+      console.log(data);
       data["year"] = data["release_date"].split("-")[0];
       data["runtime"] =
         data["runtime"] > 60 ? `${Math.floor(data["runtime"] / 60)}h ${data["runtime"] % 60}m` : `${data["runtime"]}m`;

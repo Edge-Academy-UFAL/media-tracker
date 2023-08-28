@@ -4,10 +4,18 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const express = require("express");
 
-async function getUsers(request, response) {
+async function getUser(request, response) {
+    const userId = request.userId;
+
+    if (!userId) return response.status(400).send({ error: "Missing token" });
+
     try {
-        const users = await prisma.user.findMany();
-        response.status(200).send(users);
+        const user = await prisma.user.findUnique({
+            where: {
+                id: userId,
+            },
+        });
+        response.status(200).send(user);
     } catch (err) {
         response.status(500).send({ error: err });
     }
@@ -17,19 +25,13 @@ async function createUser(request, response) {
     const { email, name, password } = request.body;
     if (!email || !name || !password) return response.status(400).send({ error: "Missing required information" });
 
-    const foundUser = await prisma.user.findUnique({
-        where: {
-            email,
-        },
-    });
-    if (foundUser) return response.status(400).send({ error: "User with this email already exists" });
     try {
         const hash = await bcrypt.hash(password, 10);
         const newUser = await prisma.user.create({
             data: {
                 email,
                 name,
-                passwrod: hash,
+                password: hash,
             },
         });
         response.status(201).send(newUser);
@@ -41,11 +43,15 @@ async function createUser(request, response) {
 async function loginUser(request, response) {
     const { email, password } = request.body;
     if (!email || !password) return response.status(400).send({ error: "Missing required information" });
+
+    console.log(email, password);
+
     const foundUser = await prisma.user.findUnique({
         where: {
             email,
         },
     });
+    console.log(foundUser);
     if (!foundUser) return response.status(400).send({ error: "User with this email does not exist" });
 
     const match = await bcrypt.compare(password, foundUser.password);
@@ -60,7 +66,7 @@ async function loginUser(request, response) {
 }
 
 async function getMovies(request, response) {
-    const { userId } = request.user;
+    const userId = request.userId;
     const { status } = request.body;
 
     try {
@@ -88,7 +94,7 @@ async function getMovies(request, response) {
 
 async function addMovie(request, response) {
     const { status } = request.body;
-    const { userId } = request.user;
+    const userId = request.userId;
     const { movieId } = request.params;
     try {
         const movie = await prisma.movie.create({
@@ -106,11 +112,10 @@ async function addMovie(request, response) {
 }
 
 async function updateStatus(request, response) {
-    try {
-        const { movieId } = request.params;
-        const { status } = request.body;
-        const { userId } = request.user;
+    const userId = request.userId;
+    const { status } = request.body;
 
+    try {
         const movie = await prisma.movie.update({
             where: {
                 userId,
@@ -128,7 +133,7 @@ async function updateStatus(request, response) {
 }
 
 module.exports = {
-    getUsers,
+    getUser,
     createUser,
     loginUser,
     getMovies,
