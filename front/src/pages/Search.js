@@ -1,6 +1,5 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { useSignOut } from "react-auth-kit";
 import { Link } from "react-router-dom";
 
 import Sidebar from "../components/Sidebar/Sidebar";
@@ -14,11 +13,6 @@ import noImageAvailable from "../assets/no-image-available.png";
 export default function Search() {
   const [data, setData] = useState({});
   const [title, setTitle] = useState("");
-  const signOut = useSignOut();
-
-  useEffect(() => {
-    showInfo();
-  }, []);
 
   useEffect(() => {
     async function getData() {
@@ -37,52 +31,9 @@ export default function Search() {
     getData();
   }, [title]);
 
-  async function showInfo() {
-    const cookie = document.cookie;
-    var fields = cookie.split(";");
-    var token = null;
-
-    for (var i = 0; i < fields.length; i++) {
-      var f = fields[i].split("=");
-      if (f[0].trim() === "_auth") {
-        token = f[1];
-        break;
-      }
-    }
-    if (token) {
-      const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/${token}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await response.json();
-      if (data.nome) {
-        document.getElementById("nomeTela").innerHTML = data.nome;
-      }
-    }
-  }
-
-  function handleLogout() {
-    signOut();
-    window.location.reload();
-  }
-
   return (
     <div className="h-full flex gap-1">
-      <style>
-        {`
-
-.image-item > img {
-  border-radius: 15px;
-  width: 250px;
-  height: 370px;
-}
-
-        `}
-      </style>
-      <Sidebar handleLogout={handleLogout} />
+      <Sidebar />
       <Body>
         <div className="flex gap-40">
           <img src={mediatracker} alt="mediatracker's logo" className="h-10 flex-1"></img>

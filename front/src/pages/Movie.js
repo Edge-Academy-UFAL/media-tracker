@@ -1,6 +1,5 @@
-import { json, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import React, { useRef, useState } from "react";
-import { useSignOut } from "react-auth-kit";
 import { useEffect } from "react";
 
 import Sidebar from "../components/Sidebar/Sidebar";
@@ -9,26 +8,15 @@ import Body from "../components/Body";
 import Mediatracker from "../assets/mediatracker.svg";
 import noImageAvailable from "../assets/no-image-available.png";
 
-import {
-  FaClock,
-  FaCircleCheck,
-  FaCircleXmark,
-  FaChevronDown,
-  FaRegStar,
-  FaRegStarHalfStroke,
-  FaStar,
-} from "react-icons/fa6";
+import { FaClock, FaChevronDown, FaRegStar, FaRegStarHalfStroke, FaStar } from "react-icons/fa6";
 import { Toast } from "primereact/toast";
 
 export default function Movie() {
   const [movie, setMovie] = useState({});
-  const params = useParams();
   const toast = useRef(null);
-  const movieId = params.id;
 
-  useEffect(() => {
-    showInfo();
-  }, []);
+  const params = useParams();
+  const movieId = params.id;
 
   useEffect(() => {
     async function getMovie() {
@@ -68,8 +56,6 @@ export default function Movie() {
     getMovie();
   }, [movieId]);
 
-  const signOut = useSignOut();
-
   async function saveMovie(movie) {
     const cookie = document.cookie;
     var fields = cookie.split(";");
@@ -87,30 +73,26 @@ export default function Movie() {
       return;
     }
 
-    const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/${token}`, {
+    const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/movies/${movieId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
+      body: JSON.stringify({ status: "plan" }),
     });
 
     const data = await response.json();
-    const id = data.id;
 
-    const response2 = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/userMovies/`, {
-      body: JSON.stringify({
-        userId: id,
-        filmeId: movie.id,
-        situacao: "plan",
-      }),
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    if (!response.ok) {
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: data.error,
+      });
+      return;
+    }
 
-    const data2 = await response2.json();
-    console.log(data2);
     toast.current.show({
       severity: "success",
       summary: "Movie saved successfully",
@@ -119,43 +101,10 @@ export default function Movie() {
     });
   }
 
-  async function showInfo() {
-    const cookie = document.cookie;
-    var fields = cookie.split(";");
-    var token = null;
-
-    for (var i = 0; i < fields.length; i++) {
-      var f = fields[i].split("=");
-      if (f[0].trim() === "_auth") {
-        token = f[1];
-        break;
-      }
-    }
-
-    if (token) {
-      const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/${token}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await response.json();
-      if (data.nome) {
-        document.getElementById("nomeTela").innerHTML = data.nome;
-      }
-    }
-  }
-
-  function handleLogout() {
-    signOut();
-    window.location.reload();
-  }
-
   return (
     <div className="h-full flex gap-1">
       <Toast ref={toast} />
-      <Sidebar handleLogout={handleLogout} />
+      <Sidebar />
       <Body>
         <div className="flex gap-10">
           <img src={Mediatracker} alt="Mediatracker" className="h-10" />

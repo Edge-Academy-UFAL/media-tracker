@@ -96,15 +96,32 @@ async function addMovie(request, response) {
     const { status } = request.body;
     const userId = request.userId;
     const { movieId } = request.params;
+
     try {
-        const movie = await prisma.movie.create({
-            data: {
-                status,
+        if (!status) return response.status(400).send({ error: "Missing required information" });
+
+        const foundMovie = await prisma.movie.findUnique({
+            where: {
+                id: movieId,
                 userId,
-                movieId,
             },
         });
-        response.status(201).send(movie);
+
+        if (foundMovie) return response.status(400).send({ error: "Movie already has been added" });
+
+        const movie = await prisma.movie.create({
+            data: {
+                id: movieId,
+                status,
+                user: {
+                    connect: {
+                        id: userId,
+                    },
+                },
+            },
+        });
+
+        response.status(201).send();
     } catch (err) {
         console.log(err);
         response.status(500).send({ error: "Internal server error" });
@@ -114,6 +131,7 @@ async function addMovie(request, response) {
 async function updateStatus(request, response) {
     const userId = request.userId;
     const { status } = request.body;
+    const { movieId } = request.params;
 
     try {
         const movie = await prisma.movie.update({

@@ -1,9 +1,18 @@
+import { useSignOut } from "react-auth-kit";
+
 import { FaRightFromBracket, FaCompass, FaMagnifyingGlass, FaClapperboard } from "react-icons/fa6";
 
 import UserTab from "./UserTab";
 import SidebarTab from "./SidebarTab";
 
-export default function Sidebar({ handleLogout }) {
+export default function Sidebar() {
+  const signOut = useSignOut();
+
+  function handleLogout() {
+    signOut();
+    window.location.reload();
+  }
+
   const url = window.location.pathname;
 
   return (

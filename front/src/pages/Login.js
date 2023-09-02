@@ -1,6 +1,6 @@
 import React from "react";
 import { useSignIn } from "react-auth-kit";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useRef } from "react";
 import { Toast } from "primereact/toast";
@@ -108,9 +108,9 @@ export default function Login() {
 
         <p className="mt-6 text-center text-xl text-white opacity-30">
           Don’t have an account?{" "}
-          <span className="underline" onClick={() => navigate("/")} style={{ cursor: "pointer" }}>
+          <Link to="/" className="underline">
             Create here
-          </span>
+          </Link>
         </p>
       </div>
     </div>

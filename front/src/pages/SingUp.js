@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useRef } from "react";
 import { Toast } from "primereact/toast";
 
@@ -144,14 +144,14 @@ export default function SignUp() {
               className="flex w-full text-center justify-center rounded-xl bg-primary-300 px-3 py-4 text-2xl font-semibold leading-6 text-white shadow-sm transition hover:brightness-105"
               onClick={handleSignUp}
             >
-              Sign in
+              Sign up
             </button>
           </div>
           <p className="mt-6 text-center text-xl text-white opacity-30">
             Already have an account?{" "}
-            <span className="underline" onClick={() => navigate("/login")} style={{ cursor: "pointer" }}>
+            <Link to="/login" className="underline">
               Login
-            </span>
+            </Link>
           </p>
         </form>
       </div>

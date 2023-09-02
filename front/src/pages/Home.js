@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useSignOut } from "react-auth-kit";
 
 import MovieFilter from "../components/Home/MovieFilter";
 import Sidebar from "../components/Sidebar/Sidebar";
@@ -11,18 +10,11 @@ import emptyIcon from "../assets/empty-icon.png";
 import plusIcon from "../assets/plus-icon.svg";
 
 export default function Home() {
-  const signOut = useSignOut();
-
-  function handleLogout() {
-    signOut();
-    window.location.reload();
-  }
-
   return (
     <div className="h-full flex gap-1">
-      <Sidebar handleLogout={handleLogout} />
+      <Sidebar />
       <Body>
-        <div className="flex gap-10">
+        <div className="flex gap-60">
           <img src={mediatracker} alt="mediatracker's logo" className="h-10"></img>
           <MovieFilter />
         </div>
