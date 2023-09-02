@@ -88,7 +88,7 @@ export default function SignUp() {
 
   return (
     <div className="flex h-full w-full flex-1 items-center flex-col justify-center text-white">
-      <div className="rounded-xl bg-primary-500 px-40 py-6">
+      <div className="rounded-xl bg-primary-500 px-40 py-12">
         <Toast ref={toast} />
         <div className="flex flex-col items-center justify-center sm:mx-auto sm:w-full sm:max-w-sm">
           <img className="mt-2 w-80" src={mediatracker} alt="mediatracker's logo"></img>

@@ -6,7 +6,7 @@ export default function MovieFilter() {
   const [filter, setFilter] = useState("completed");
 
   return (
-    <div className="flex bg-primary-700 rounded-xl text-lg flex-1 gap-2 px-2">
+    <div className="flex bg-primary-700 rounded-xl text-xl flex-1 gap-2 px-2">
       <FilterButton
         hover="hover:bg-secondary-700"
         color="bg-secondary-700"

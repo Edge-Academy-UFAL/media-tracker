@@ -11,7 +11,7 @@ export default function Error() {
         color: "#ffffff",
       }}
     >
-      Erro 404 - Página não encontrada
+      Error 404 - Page not found
     </h1>
   );
 }

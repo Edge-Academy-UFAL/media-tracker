@@ -1,16 +1,12 @@
 import React from "react";
 import { useEffect, useState } from "react";
+import { useSignOut } from "react-auth-kit";
+import { Link } from "react-router-dom";
 
 import Sidebar from "../components/Sidebar/Sidebar";
 import Body from "../components/Body";
-import { InputText } from "primereact/inputtext";
 
-import "primereact/resources/themes/lara-light-indigo/theme.css";
-import "primereact/resources/primereact.min.css";
-import "./Search.css";
-import "primeicons/primeicons.css";
-import { useSignOut } from "react-auth-kit";
-import { Link } from "react-router-dom";
+import { FaMagnifyingGlass } from "react-icons/fa6";
 
 import mediatracker from "../assets/mediatracker.svg";
 import noImageAvailable from "../assets/no-image-available.png";
@@ -75,50 +71,61 @@ export default function Search() {
 
   return (
     <div className="h-full flex gap-1">
+      <style>
+        {`
+
+.image-item > img {
+  border-radius: 15px;
+  width: 250px;
+  height: 370px;
+}
+
+        `}
+      </style>
       <Sidebar handleLogout={handleLogout} />
       <Body>
-        <div className="flex gap-24">
+        <div className="flex gap-40">
           <img src={mediatracker} alt="mediatracker's logo" className="h-10 flex-1"></img>
-          <div className="w-full mr-12">
-            <span className="p-input-icon-left w-full">
-              <i className="pi pi-search px-1" />
-              <InputText
+          <div className="w-full">
+            <span className="w-full flex relative items-center">
+              <FaMagnifyingGlass className="h-7 w-7 absolute text-white/50 ml-7" />
+              <input
                 placeholder="Search..."
-                className="p-inputtext-lg custom-input-style w-full"
+                className="w-full text-white/50 custom-input-style bg-primary-700 rounded-xl text-2xl italic font-medium border-none pl-20 py-4 shadow-xl transition focus:outline-none focus:ring-[3px] focus:ring-[#c7d2fe] focus:border-transparent"
                 onChange={(e) => setTitle(e.target.value)}
               />
             </span>
           </div>
         </div>
-        <div
-          className={`image-container ${
-            data.results?.length > 0
-              ? "justify-start self-start overflow-y-auto"
-              : "items-center justify-center h-full overflow-hidden"
-          }`}
-        >
-          {data.results?.length ? (
-            data.results?.map((item) => (
+        {data.results?.length ? (
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 mt-12 overflow-y-auto">
+            {data.results?.map((item) => (
               <Link
                 to={`/movie/${item.id}`}
                 key={item.id}
-                className="image-item transition-opacity ease-in duration-100 hover:opacity-40"
+                className="mb-12 transition-opacity ease-in duration-100 hover:opacity-40"
               >
                 {item.poster_path ? (
                   <>
-                    <img src={`https://image.tmdb.org/t/p/w500${item.poster_path}`} alt={item.title} />
+                    <img
+                      className="rounded-2xl w-[260px] h-[390px]"
+                      src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+                      alt={item.title}
+                    />
                   </>
                 ) : (
-                  <img src={noImageAvailable} alt={item.title} />
+                  <img className="rounded-2xl w-[260px] h-[390px]" src={noImageAvailable} alt={item.title} />
                 )}
               </Link>
-            ))
-          ) : (
+            ))}
+          </div>
+        ) : (
+          <div className="overflow-y-hidden h-full items-center flex justify-center">
             <div className="flex items-center justify-center text-2xl font-semibold text-white/50 italic">
               Start typing to search a movie you like
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </Body>
     </div>
   );
