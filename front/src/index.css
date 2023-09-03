@@ -37,18 +37,15 @@ input::placeholder {
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 12px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #b8b7b7;
-  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 100px;
 }
 
 ::-webkit-scrollbar-track {
+  border-radius: 100px;
   background-color: #1a202c;
-}
-
-::-webkit-scrollbar-vertical {
-  width: 10px;
 }
