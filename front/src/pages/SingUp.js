@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useRef } from "react";
 import { Toast } from "primereact/toast";
@@ -14,6 +14,24 @@ export default function SignUp() {
   const toast = useRef(null);
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    const cookie = document.cookie;
+    var fields = cookie.split(";");
+    var token = null;
+
+    for (var i = 0; i < fields.length; i++) {
+      var f = fields[i].split("=");
+      if (f[0].trim() === "_auth") {
+        token = f[1];
+        break;
+      }
+    }
+
+    if (token) {
+      navigate("/home");
+    }
+  }, [navigate]);
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);

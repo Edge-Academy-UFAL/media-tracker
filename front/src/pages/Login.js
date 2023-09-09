@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSignIn } from "react-auth-kit";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -16,6 +16,24 @@ export default function Login() {
   const navigate = useNavigate();
   const signIn = useSignIn();
   const toast = useRef(null);
+
+  useEffect(() => {
+    const cookie = document.cookie;
+    var fields = cookie.split(";");
+    var token = null;
+
+    for (var i = 0; i < fields.length; i++) {
+      var f = fields[i].split("=");
+      if (f[0].trim() === "_auth") {
+        token = f[1];
+        break;
+      }
+    }
+
+    if (token) {
+      navigate("/home");
+    }
+  }, [navigate]);
 
   const handleLogin = async (event) => {
     event.preventDefault();
