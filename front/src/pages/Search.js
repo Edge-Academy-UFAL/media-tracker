@@ -1,6 +1,5 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 
 import Sidebar from "../components/Sidebar/Sidebar";
 import Body from "../components/Body";
@@ -8,7 +7,7 @@ import Body from "../components/Body";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 
 import mediatracker from "../assets/mediatracker.svg";
-import noImageAvailable from "../assets/no-image-available.png";
+import MovieList from "../components/MovieList";
 
 export default function Search() {
   const [data, setData] = useState({});
@@ -48,35 +47,7 @@ export default function Search() {
             </span>
           </div>
         </div>
-        {data.results?.length ? (
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 mt-12 overflow-y-auto">
-            {data.results?.map((item) => (
-              <Link
-                to={`/movie/${item.id}`}
-                key={item.id}
-                className="mb-12 transition-opacity ease-in duration-100 hover:opacity-40"
-              >
-                {item.poster_path ? (
-                  <>
-                    <img
-                      className="rounded-2xl w-[260px] h-[390px]"
-                      src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                      alt={item.title}
-                    />
-                  </>
-                ) : (
-                  <img className="rounded-2xl w-[260px] h-[390px]" src={noImageAvailable} alt={item.title} />
-                )}
-              </Link>
-            ))}
-          </div>
-        ) : (
-          <div className="overflow-y-hidden h-full items-center flex justify-center">
-            <div className="flex items-center justify-center text-2xl font-semibold text-white/50 italic">
-              Start typing to search a movie you like
-            </div>
-          </div>
-        )}
+        <MovieList data={data} page="search" />
       </Body>
     </div>
   );

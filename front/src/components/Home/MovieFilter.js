@@ -1,10 +1,7 @@
-import { useState } from "react";
 import FilterButton from "./FilterButton";
 import { FaClock, FaCircleCheck, FaCircleXmark } from "react-icons/fa6";
 
-export default function MovieFilter() {
-  const [filter, setFilter] = useState("completed");
-
+export default function MovieFilter({ setFilter, filter }) {
   return (
     <div className="flex bg-primary-700 rounded-xl text-xl flex-1 gap-2 px-2">
       <FilterButton

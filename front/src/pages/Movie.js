@@ -41,7 +41,7 @@ export default function Movie() {
       });
 
       const data = await response.json();
-      console.log(data);
+
       data["year"] = data["release_date"].split("-")[0];
       data["runtime"] =
         data["runtime"] > 60 ? `${Math.floor(data["runtime"] / 60)}h ${data["runtime"] % 60}m` : `${data["runtime"]}m`;
@@ -82,13 +82,13 @@ export default function Movie() {
       body: JSON.stringify({ status: "plan" }),
     });
 
-    const data = await response.json();
-
-    if (!response.ok) {
+    if (response.status !== 201) {
+      const data = await response.json();
       toast.current.show({
         severity: "error",
         summary: "Error",
         detail: data.error,
+        life: 4000,
       });
       return;
     }
@@ -160,12 +160,12 @@ export default function Movie() {
               )}
               {movie.fullStars && (
                 <div className="flex gap-1 mt-10" title={movie.vote_average}>
-                  {movie.fullStars.map((star) => (
-                    <FaStar size={56} color="#FFC107" />
+                  {movie.fullStars.map((_, i) => (
+                    <FaStar size={56} color="#FFC107" key={i} />
                   ))}
                   {movie.hasHalfStar && <FaRegStarHalfStroke size={58} color="#FFC107" />}
-                  {movie.emptyStars.map((star) => (
-                    <FaRegStar size={56} color="#FFC107" />
+                  {movie.emptyStars.map((_, i) => (
+                    <FaRegStar size={56} color="#FFC107" key={i} />
                   ))}
                 </div>
               )}

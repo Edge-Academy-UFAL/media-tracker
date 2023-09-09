@@ -2,7 +2,6 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const express = require("express");
 
 async function getUser(request, response) {
     const userId = request.userId;
@@ -51,7 +50,6 @@ async function loginUser(request, response) {
             email,
         },
     });
-    console.log(foundUser);
     if (!foundUser) return response.status(400).send({ error: "User with this email does not exist" });
 
     const match = await bcrypt.compare(password, foundUser.password);
@@ -67,7 +65,9 @@ async function loginUser(request, response) {
 
 async function getMovies(request, response) {
     const userId = request.userId;
-    const { status } = request.body;
+    const status = request.query.status;
+
+    console.log("status:", status);
 
     try {
         if (!status) {
@@ -76,7 +76,7 @@ async function getMovies(request, response) {
                     userId,
                 },
             });
-            response.status(201).send(movies);
+            return response.status(201).send(movies);
         }
 
         const movies = await prisma.movie.findMany({
@@ -109,7 +109,7 @@ async function addMovie(request, response) {
 
         if (foundMovie) return response.status(400).send({ error: "Movie already has been added" });
 
-        const movie = await prisma.movie.create({
+        await prisma.movie.create({
             data: {
                 id: movieId,
                 status,

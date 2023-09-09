@@ -28,7 +28,6 @@ export default function UserTab() {
       });
 
       const data = await response.json();
-      console.log(data);
       if (data.name) {
         document.getElementById("nomeTela").innerHTML = data.name;
       }
