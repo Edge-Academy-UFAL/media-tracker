@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import MovieFilter from "../components/Home/MovieFilter";
 import Sidebar from "../components/Sidebar/Sidebar";
 import Body from "../components/Body";
 
 import mediatracker from "../assets/mediatracker.svg";
-import plusIcon from "../assets/plus-icon.svg";
 import MovieList from "../components/MovieList";
 
 export default function Home() {
@@ -84,12 +83,6 @@ export default function Home() {
           <MovieFilter setFilter={setFilter} filter={filter} />
         </div>
         <MovieList data={data} page="home" />
-        <Link
-          to="/search"
-          className="bg-primary-700 hover:brightness-125 transition text-white h-20 w-20 rounded-full absolute bottom-10 right-10 shadow-lg flex items-center justify-center"
-        >
-          <img src={plusIcon} alt="Plus sign" className="w-10" />
-        </Link>
       </Body>
     </div>
   );

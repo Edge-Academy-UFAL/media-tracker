@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import plusIcon from "../assets/plus-icon.svg";
 
 import noImageAvailable from "../assets/no-image-available.png";
 import emptyIcon from "../assets/empty-icon.png";
@@ -35,11 +36,19 @@ export default function MovieList({ data, page }) {
           </div>
         </div>
       ) : (
-        <div className="flex flex-col items-center h-full justify-center font-medium">
-          <img src={emptyIcon} alt="Your movie library is empty" className="h-44" />
-          <h2 className="text-5xl pt-10">Your movie library is empty</h2>
-          <h3 className="italic text-white/50 text-xl pt-4">Add a movie to your collection</h3>
-        </div>
+        <>
+          <div className="flex flex-col items-center h-full justify-center font-medium">
+            <img src={emptyIcon} alt="Your movie library is empty" className="h-44" />
+            <h2 className="text-5xl pt-10">Your movie library is empty</h2>
+            <h3 className="italic text-white/50 text-xl pt-4">Add a movie to your collection</h3>
+          </div>
+          <Link
+            to="/search"
+            className="bg-primary-700 hover:brightness-125 transition text-white h-20 w-20 rounded-full absolute bottom-10 right-10 shadow-lg flex items-center justify-center"
+          >
+            <img src={plusIcon} alt="Plus sign" className="w-10" />
+          </Link>
+        </>
       )}
     </>
   );
