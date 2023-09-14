@@ -16,7 +16,7 @@ export default function Movie() {
   const toast = useRef(null);
 
   const params = useParams();
-  const movieId = params.id;
+  const tmdbId = params.id;
 
   useEffect(() => {
     async function getMovie() {
@@ -32,7 +32,7 @@ export default function Movie() {
         }
       }
 
-      const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/movies/searchById/${movieId}`, {
+      const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/movies/searchById/${tmdbId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -54,7 +54,7 @@ export default function Movie() {
     }
 
     getMovie();
-  }, [movieId]);
+  }, [tmdbId]);
 
   async function saveMovie(movie) {
     const cookie = document.cookie;
@@ -73,7 +73,7 @@ export default function Movie() {
       return;
     }
 
-    const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/movies/${movieId}`, {
+    const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/movies/${tmdbId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

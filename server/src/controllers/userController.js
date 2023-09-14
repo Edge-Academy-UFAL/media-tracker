@@ -14,6 +14,7 @@ async function getUser(request, response) {
                 id: userId,
             },
         });
+
         response.status(200).send(user);
     } catch (err) {
         response.status(500).send({ error: err });
@@ -22,10 +23,12 @@ async function getUser(request, response) {
 
 async function createUser(request, response) {
     const { email, name, password } = request.body;
+
     if (!email || !name || !password) return response.status(400).send({ error: "Missing required information" });
 
     try {
         const hash = await bcrypt.hash(password, 10);
+
         const newUser = await prisma.user.create({
             data: {
                 email,
@@ -33,6 +36,7 @@ async function createUser(request, response) {
                 password: hash,
             },
         });
+
         response.status(201).send(newUser);
     } catch (err) {
         response.status(500).send({ error: err });
@@ -41,15 +45,15 @@ async function createUser(request, response) {
 
 async function loginUser(request, response) {
     const { email, password } = request.body;
-    if (!email || !password) return response.status(400).send({ error: "Missing required information" });
 
-    console.log(email, password);
+    if (!email || !password) return response.status(400).send({ error: "Missing required information" });
 
     const foundUser = await prisma.user.findUnique({
         where: {
             email,
         },
     });
+
     if (!foundUser) return response.status(400).send({ error: "User with this email does not exist" });
 
     const match = await bcrypt.compare(password, foundUser.password);
@@ -66,8 +70,6 @@ async function loginUser(request, response) {
 async function getMovies(request, response) {
     const userId = request.userId;
     const status = request.query.status;
-
-    console.log("status:", status);
 
     try {
         if (!status) {
@@ -95,14 +97,14 @@ async function getMovies(request, response) {
 async function addMovie(request, response) {
     const { status } = request.body;
     const userId = request.userId;
-    const { movieId } = request.params;
+    const { tmdbId } = request.params;
 
     try {
         if (!status) return response.status(400).send({ error: "Missing required information" });
 
-        const foundMovie = await prisma.movie.findUnique({
+        const foundMovie = await prisma.movie.findFirst({
             where: {
-                id: movieId,
+                tmdbId,
                 userId,
             },
         });
@@ -111,7 +113,7 @@ async function addMovie(request, response) {
 
         await prisma.movie.create({
             data: {
-                id: movieId,
+                tmdbId,
                 status,
                 user: {
                     connect: {
@@ -131,13 +133,13 @@ async function addMovie(request, response) {
 async function updateStatus(request, response) {
     const userId = request.userId;
     const { status } = request.body;
-    const { movieId } = request.params;
+    const { tmdbId } = request.params;
 
     try {
         const movie = await prisma.movie.update({
             where: {
                 userId,
-                movieId,
+                tmdbId,
             },
             data: {
                 status,

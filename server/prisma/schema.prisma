@@ -16,12 +16,11 @@ model User {
 }
 
 model Movie {
-  id               String
-  status           String
-  rating           Int?
-  watched_location String?
-  user             User    @relation(fields: [userId], references: [id])
-  userId           String
-
-  @@id([userId])
+  id              String  @id @default(uuid())
+  tmdbId          String
+  status          String
+  rating          Int?
+  watchedLocation String?
+  user            User    @relation(fields: [userId], references: [id])
+  userId          String
 }

@@ -37,8 +37,8 @@ export default function Home() {
     setData({ results: [] });
     setMovies([]);
 
-    async function getMovie(movieId) {
-      const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/movies/searchById/${movieId}`, {
+    async function getMovie(tmdbId) {
+      const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/movies/searchById/${tmdbId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -60,10 +60,10 @@ export default function Home() {
         },
       });
 
-      const movieIds = await received.json();
-      if (movieIds.length > 0) {
-        movieIds.forEach((movieId) => {
-          getMovie(movieId.id);
+      const movies = await received.json();
+      if (movies.length > 0) {
+        movies.forEach((movie) => {
+          getMovie(movie.tmdbId);
         });
       }
     }

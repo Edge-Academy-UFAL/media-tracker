@@ -11,8 +11,8 @@ export default function MovieList({ data, page }) {
         <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 mt-12 overflow-y-auto">
           {data.results?.map((item) => (
             <Link
-              to={`/movie/${item.id}`}
-              key={item.id}
+              to={`/movie/${page === "search" ? item.id : item.tmdbId}`}
+              key={page === "search" ? item.id : item.tmdbId}
               className="mb-12 transition-opacity ease-in duration-100 hover:opacity-40"
             >
               {item.poster_path ? (
