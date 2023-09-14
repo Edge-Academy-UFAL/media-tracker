@@ -77,9 +77,9 @@ export default function SignUp() {
       } else {
         toast.current.clear();
         const values = {
-          nome: name,
+          name,
           email,
-          senha: password,
+          password,
         };
 
         const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users`, {
