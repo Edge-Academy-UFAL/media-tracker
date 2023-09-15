@@ -2,10 +2,10 @@ FROM node:18.13.0
 
 WORKDIR /usr/app
 
-COPY package*.json ./
+COPY . .
+RUN rm -r package-lock.json node_modules
 RUN npm install
 
-COPY . .
 
 EXPOSE 3001
 
