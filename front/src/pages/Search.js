@@ -9,6 +9,7 @@ import { FaMagnifyingGlass } from "react-icons/fa6";
 import mediatracker from "../assets/mediatracker.svg";
 import MovieList from "../components/MovieList";
 
+
 export default function Search() {
   const [data, setData] = useState({});
   const [title, setTitle] = useState("");

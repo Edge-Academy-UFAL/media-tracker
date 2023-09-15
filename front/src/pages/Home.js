@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useAuthUser } from "react-auth-kit";
 
 import MovieFilter from "../components/Home/MovieFilter";
 import Sidebar from "../components/Sidebar/Sidebar";
@@ -11,27 +11,10 @@ import MovieList from "../components/MovieList";
 export default function Home() {
   const [data, setData] = useState({});
   const [movies, setMovies] = useState([]);
-  const [token, setToken] = useState("");
   const [filter, setFilter] = useState("completed");
-  const navigate = useNavigate();
+  const authUser = useAuthUser();
 
-  useEffect(() => {
-    const cookie = document.cookie;
-    var fields = cookie.split(";");
-    var token = null;
-
-    for (var i = 0; i < fields.length; i++) {
-      var f = fields[i].split("=");
-      if (f[0].trim() === "_auth") {
-        token = f[1];
-        break;
-      }
-    }
-    if (token === null) {
-      navigate("/login");
-    }
-    setToken(token);
-  }, [navigate]);
+  const token = authUser().token;
 
   useEffect(() => {
     setData({ results: [] });

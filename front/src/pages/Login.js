@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useSignIn } from "react-auth-kit";
 import { Link, useNavigate } from "react-router-dom";
+
 
 import { useRef } from "react";
 import { Toast } from "primereact/toast";
@@ -17,23 +18,6 @@ export default function Login() {
   const signIn = useSignIn();
   const toast = useRef(null);
 
-  useEffect(() => {
-    const cookie = document.cookie;
-    var fields = cookie.split(";");
-    var token = null;
-
-    for (var i = 0; i < fields.length; i++) {
-      var f = fields[i].split("=");
-      if (f[0].trim() === "_auth") {
-        token = f[1];
-        break;
-      }
-    }
-
-    if (token) {
-      navigate("/home");
-    }
-  }, [navigate]);
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -77,7 +61,7 @@ export default function Login() {
           token: data.token,
           expiresIn: 3600,
           tokenType: "Bearer",
-          authState: { name: data.name },
+          authState: { token: data.token, expiresIn: 3600, tokenType: "Bearer" },
         });
         navigate("/home");
       }

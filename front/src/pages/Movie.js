@@ -1,6 +1,8 @@
 import { useParams } from "react-router-dom";
 import React, { useRef, useState } from "react";
 import { useEffect } from "react";
+import { useAuthUser } from "react-auth-kit";
+
 
 import Sidebar from "../components/Sidebar/Sidebar";
 import Body from "../components/Body";
@@ -14,24 +16,16 @@ import { Toast } from "primereact/toast";
 export default function Movie() {
   const [movie, setMovie] = useState({});
   const toast = useRef(null);
+  const authUser = useAuthUser();
+
+  const token = authUser().token;
+
 
   const params = useParams();
   const tmdbId = params.id;
 
   useEffect(() => {
     async function getMovie() {
-      const cookie = document.cookie;
-      var fields = cookie.split(";");
-      var token = null;
-
-      for (var i = 0; i < fields.length; i++) {
-        var f = fields[i].split("=");
-        if (f[0].trim() === "_auth") {
-          token = f[1];
-          break;
-        }
-      }
-
       const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/movies/searchById/${tmdbId}`, {
         method: "GET",
         headers: {
@@ -45,7 +39,7 @@ export default function Movie() {
       data["year"] = data["release_date"].split("-")[0];
       data["runtime"] =
         data["runtime"] > 60 ? `${Math.floor(data["runtime"] / 60)}h ${data["runtime"] % 60}m` : `${data["runtime"]}m`;
-      data["production"] = data["production_companies"][0]["name"];
+      data["production"] = data["production_companies"].map((company) => company.name).join(", ");
       data["emptyStars"] = Array(5 - Math.ceil(data["vote_average"] / 2)).fill(0);
       data["fullStars"] = Array(Math.floor(data["vote_average"] / 2)).fill(0);
       data["hasHalfStar"] = data["vote_average"] % 2 !== 0;
@@ -54,21 +48,9 @@ export default function Movie() {
     }
 
     getMovie();
-  }, [tmdbId]);
+  }, [tmdbId, token]);
 
   async function saveMovie(movie) {
-    const cookie = document.cookie;
-    var fields = cookie.split(";");
-    var token = null;
-
-    for (var i = 0; i < fields.length; i++) {
-      var f = fields[i].split("=");
-      if (f[0].trim() === "_auth") {
-        token = f[1];
-        break;
-      }
-    }
-
     if (!token) {
       return;
     }
@@ -124,9 +106,8 @@ export default function Movie() {
             )}
             <div
               className="flex leading-[3.2rem] w-80 rounded-xl bg-secondary-700 text-white text-2xl font-semibold cursor-pointer transition hover:brightness-110"
-              onClick={() => saveMovie(movie)}
             >
-              <div className="flex w-4/5 items-center justify-center">
+              <div className="flex w-4/5 items-center justify-center" onClick={() => saveMovie(movie)}>
                 <FaClock size={24} className="mr-3 mt-0.5" />
                 Plan to watch
               </div>
@@ -137,7 +118,7 @@ export default function Movie() {
           </div>
           <div className="flex flex-col flex-[4] max-h-[480px]">
             <div className="max-w-2xl">
-              <h1 className="text-5xl font-semibold line-clamp-2 pb-2" title={movie.title}>
+              <h1 className="text-4xl font-semibold line-clamp-2 pb-2" title={movie.title}>
                 {movie.title}
               </h1>
               <div className="flex flex-col gap-4 mt-10 text-white/50">
