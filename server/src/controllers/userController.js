@@ -56,6 +56,14 @@ async function loginUser(request, response) {
 
     if (!email || !password) return response.status(400).send({ error: "Missing required information" });
 
+    const foundUser = await prisma.user.findUnique({
+        where: {
+            email,
+        },
+    });
+
+    if (!foundUser) return response.status(400).send({ error: "User with this email does not exist" });
+
 
     const match = await bcrypt.compare(password, foundUser.password);
 
