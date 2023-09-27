@@ -26,6 +26,14 @@ async function createUser(request, response) {
 
     if (!email || !name || !password) return response.status(400).send({ error: "Missing required information" });
 
+    const foundUser = await prisma.user.findUnique({
+        where: {
+            email,
+        },
+    });
+
+    if (foundUser) return response.status(400).send({ error: "User with this email already exists" });
+
     try {
         const hash = await bcrypt.hash(password, 10);
 
@@ -48,13 +56,6 @@ async function loginUser(request, response) {
 
     if (!email || !password) return response.status(400).send({ error: "Missing required information" });
 
-    const foundUser = await prisma.user.findUnique({
-        where: {
-            email,
-        },
-    });
-
-    if (!foundUser) return response.status(400).send({ error: "User with this email does not exist" });
 
     const match = await bcrypt.compare(password, foundUser.password);
 
@@ -64,7 +65,7 @@ async function loginUser(request, response) {
         expiresIn: "1d",
     });
 
-    response.json({ token: jwtToken });
+    response.status(200).send({ token: jwtToken });
 }
 
 async function getMovies(request, response) {

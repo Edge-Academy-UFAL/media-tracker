@@ -18,27 +18,10 @@ app.use((request, response, next) => {
     next();
 });
 
-function normalizaPort(val) {
-    const port = parseInt(val, 10);
-    if (Number.isNaN(port)) {
-        return val;
-    }
-    if (port >= 0) {
-        return port;
-    }
-    return false;
-}
-
 const userRoute = require("./src/routes/userRoute");
 const movieRoute = require("./src/routes/movieRoute");
 
 app.use("/users", userRoute);
 app.use("/movies", movieRoute);
-
-const port = normalizaPort(process.env.PORT || "3001");
-
-app.listen(port, () => {
-    console.log(`App listening on port ${port}`);
-});
 
 module.exports = app;

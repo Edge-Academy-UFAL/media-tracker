@@ -20,7 +20,7 @@ model Movie {
   tmdbId          String
   status          String
   rating          Int?
+  userId          String
   watchedLocation String?
   user            User    @relation(fields: [userId], references: [id])
-  userId          String
 }
