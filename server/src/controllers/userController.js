@@ -13,6 +13,8 @@ async function getUser(request, response) {
       },
     });
 
+    if(!user) return response.status(404).send({ error: 'User not found' });
+
     response.status(200).send(user);
   } catch (err) {
     response.status(500).send({ error: err });
@@ -92,7 +94,7 @@ async function getMovies(request, response) {
           userId,
         },
       });
-      return response.status(201).send(movies);
+      return response.status(200).send(movies);
     }
 
     const movies = await prisma.movie.findMany({
@@ -102,7 +104,7 @@ async function getMovies(request, response) {
       },
     });
 
-    response.status(201).send(movies);
+    response.status(200).send(movies);
   } catch (err) {
     response.status(500).send({ error: err });
   }
@@ -141,7 +143,6 @@ async function addMovie(request, response) {
 
     response.status(201).send({ message: 'Movie added' });
   } catch (err) {
-    console.log(err);
     response.status(500).send({ error: 'Internal server error' });
   }
 }
