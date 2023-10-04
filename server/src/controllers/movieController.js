@@ -1,8 +1,8 @@
 const { redis } = require('../lib/cache');
 
 async function getMovie(request, response) {
-  const { id } = request.params;
   try {
+    const { id } = request.params;
     if (!id) return response.status(400).send({ error: 'Missing required information' });
 
     const cachedMovie = await redis.get(id);
