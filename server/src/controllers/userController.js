@@ -107,7 +107,7 @@ async function getMovie(request, response) {
     const { tmdbId } = request.params;
 
     try {
-        const movie = await prisma.movie.findUniqueOrThrow({
+        const movie = await prisma.movie.findFirst({
             where: {
                 userId,
                 tmdbId,
@@ -115,6 +115,7 @@ async function getMovie(request, response) {
         });
         return response.status(200).send(movie);
     } catch (err) {
+        console.log(err);
         response.status(500).send({ error: err });
     }
 }

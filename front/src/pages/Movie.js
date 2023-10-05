@@ -3,26 +3,26 @@ import React, { useRef, useState } from "react";
 import { useEffect } from "react";
 import { useAuthUser } from "react-auth-kit";
 
-
 import Sidebar from "../components/Sidebar/Sidebar";
 import Body from "../components/Body";
 
 import Mediatracker from "../assets/mediatracker.svg";
 import noImageAvailable from "../assets/no-image-available.png";
 
-import { FaClock, FaChevronDown, FaRegStar, FaRegStarHalfStroke, FaStar } from "react-icons/fa6";
+import { FaRegStar, FaRegStarHalfStroke, FaStar } from "react-icons/fa6";
 import { Toast } from "primereact/toast";
+import SelectStatus from "../components/Movie/SelectStatus";
 
 export default function Movie() {
   const [movie, setMovie] = useState({});
   const toast = useRef(null);
   const authUser = useAuthUser();
-
   const token = authUser().token;
-
 
   const params = useParams();
   const tmdbId = params.id;
+
+  const [movieStatus, setMovieStatus] = useState("unset");
 
   useEffect(() => {
     async function getMovie() {
@@ -47,41 +47,28 @@ export default function Movie() {
       setMovie(data);
     }
 
+    async function getMovieStatus() {
+      const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/movies/${tmdbId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status !== 200) {
+        setMovieStatus("unset");
+        return;
+      }
+
+      const data = await response.json();
+      setMovieStatus(data.status);
+      console.log(data.status);
+    }
+
+    getMovieStatus();
     getMovie();
   }, [tmdbId, token]);
-
-  async function saveMovie(movie) {
-    if (!token) {
-      return;
-    }
-
-    const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/movies/${tmdbId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ status: "plan" }),
-    });
-
-    if (response.status !== 201) {
-      const data = await response.json();
-      toast.current.show({
-        severity: "error",
-        summary: "Error",
-        detail: data.error,
-        life: 4000,
-      });
-      return;
-    }
-
-    toast.current.show({
-      severity: "success",
-      summary: "Movie saved successfully",
-      detail: `${movie.title} saved to your list`,
-      life: 4000,
-    });
-  }
 
   return (
     <div className="h-full flex gap-1">
@@ -104,18 +91,16 @@ export default function Movie() {
             ) : (
               <img src={noImageAvailable} alt={movie.title} className="w-80 rounded-2xl" />
             )}
-            <div
-              className="flex leading-[3.2rem] w-80 rounded-xl bg-secondary-700 text-white text-2xl font-semibold cursor-pointer transition hover:brightness-110"
-            >
-              <div className="flex w-4/5 items-center justify-center" onClick={() => saveMovie(movie)}>
-                <FaClock size={24} className="mr-3 mt-0.5" />
-                Plan to watch
-              </div>
-              <div className="flex w-1/5 justify-center items-center border-l-[3px] border-primary-500/30">
-                <FaChevronDown size={30} />
-              </div>
-            </div>
+            <SelectStatus
+              token={token}
+              toast={toast}
+              tmdbId={tmdbId}
+              movie={movie}
+              movieStatus={movieStatus}
+              setMovieStatus={setMovieStatus}
+            />
           </div>
+
           <div className="flex flex-col flex-[4] max-h-[480px]">
             <div className="max-w-2xl">
               <h1 className="text-4xl font-semibold line-clamp-2 pb-2" title={movie.title}>
