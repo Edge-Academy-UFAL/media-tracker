@@ -3,8 +3,9 @@ import plusIcon from "../assets/plus-icon.svg";
 
 import noImageAvailable from "../assets/no-image-available.png";
 import emptyIcon from "../assets/empty-icon.png";
+import { FaCircleCheck, FaCircleXmark, FaClock } from "react-icons/fa6";
 
-export default function MovieList({ data, page }) {
+export default function MovieList({ data, page, userMoviesIds }) {
   return (
     <>
       {data.results?.length ? (
@@ -13,18 +14,53 @@ export default function MovieList({ data, page }) {
             <Link
               to={`/movie/${item.id}`}
               key={item.id}
-              className="mb-12 transition-opacity ease-in duration-100 hover:opacity-40"
+              className="relative mb-12 transition-opacity ease-in duration-100 hover:opacity-40"
             >
+              {userMoviesIds?.find((id) => parseInt(id[0]) === item.id) && (
+                <span
+                  className={`absolute z-10 text-lg top-3 flex items-center justify-center gap-6 py-1 rounded-lg w-[240px] left-[10px] text-white font-semibold
+                ${userMoviesIds?.find((id) => parseInt(id[0]) === item.id)[1] === "plan" ? "bg-secondary-700" : ""}
+                ${userMoviesIds?.find((id) => parseInt(id[0]) === item.id)[1] === "completed" ? "bg-[#609F6E]" : ""}
+                ${userMoviesIds?.find((id) => parseInt(id[0]) === item.id)[1] === "dropped" ? "bg-[#9F6060]" : ""}
+                `}
+                >
+                  {userMoviesIds?.find((id) => parseInt(id[0]) === item.id)[1] === "plan" ? (
+                    <FaClock size={24} />
+                  ) : userMoviesIds?.find((id) => parseInt(id[0]) === item.id)[1] === "completed" ? (
+                    <FaCircleCheck size={24} />
+                  ) : userMoviesIds?.find((id) => parseInt(id[0]) === item.id)[1] === "dropped" ? (
+                    <FaCircleXmark size={24} />
+                  ) : (
+                    ""
+                  )}
+                  {userMoviesIds?.find((id) => parseInt(id[0]) === item.id)[1] === "plan"
+                    ? "Plan to watch"
+                    : userMoviesIds?.find((id) => parseInt(id[0]) === item.id)[1] === "completed"
+                    ? "Completed"
+                    : userMoviesIds?.find((id) => parseInt(id[0]) === item.id)[1] === "dropped"
+                    ? "Dropped"
+                    : ""}
+                </span>
+              )}
+
               {item.poster_path ? (
                 <>
                   <img
-                    className="rounded-2xl w-[260px] h-[390px]"
+                    className={`rounded-2xl w-[260px] h-[390px] ${
+                      userMoviesIds?.find((id) => parseInt(id[0]) === item.id) ? "opacity-40" : ""
+                    }`}
                     src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
                     alt={item.title}
                   />
                 </>
               ) : (
-                <img className="rounded-2xl w-[260px] h-[390px]" src={noImageAvailable} alt={item.title} />
+                <img
+                  className={`rounded-2xl w-[260px] h-[390px] ${
+                    userMoviesIds?.find((id) => parseInt(id[0]) === item.id) ? "opacity-40" : ""
+                  }`}
+                  src={noImageAvailable}
+                  alt={item.title}
+                />
               )}
             </Link>
           ))}

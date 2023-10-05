@@ -8,11 +8,74 @@ import { FaMagnifyingGlass } from "react-icons/fa6";
 
 import mediatracker from "../assets/mediatracker.svg";
 import MovieList from "../components/MovieList";
+import { useAuthUser } from "react-auth-kit";
 
 
 export default function Search() {
   const [data, setData] = useState({});
   const [title, setTitle] = useState("");
+  const [userMoviesIds, setUserMoviesIds] = useState([]);
+  // userMoviesIds = [[1, 'plan'], [2, 'completed'], [3, 'dropped']]
+  const authUser = useAuthUser();
+
+  const token = authUser().token;
+
+  useEffect(() => {
+    async function getUserMoviesPlan() {
+      const received = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/movies?status=plan`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const movies = await received.json();
+      if (movies.length > 0) {
+        movies.forEach((movie) => {
+          setUserMoviesIds((userMoviesIds) => [...userMoviesIds, [movie.tmdbId, 'plan']]);
+        });
+      }
+    }
+
+    async function getUserMoviesCompleted() {
+      const received = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/movies?status=completed`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const movies = await received.json();
+      if (movies.length > 0) {
+        movies.forEach((movie) => {
+          setUserMoviesIds((userMoviesIds) => [...userMoviesIds, [movie.tmdbId, 'completed']]);
+        });
+      }
+    }
+
+    async function getUserMoviesDropped() {
+      const received = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/movies?status=dropped`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const movies = await received.json();
+      if (movies.length > 0) {
+        movies.forEach((movie) => {
+          setUserMoviesIds((userMoviesIds) => [...userMoviesIds, [movie.tmdbId, 'dropped']]);
+        });
+      }
+    }
+
+    getUserMoviesPlan();
+    getUserMoviesCompleted();
+    getUserMoviesDropped();
+  }, [token]);
 
   useEffect(() => {
     async function getData() {
@@ -48,7 +111,7 @@ export default function Search() {
             </span>
           </div>
         </div>
-        <MovieList data={data} page="search" />
+        <MovieList data={data} page="search" userMoviesIds={userMoviesIds} />
       </Body>
     </div>
   );
