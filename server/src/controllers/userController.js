@@ -158,15 +158,15 @@ async function addMovie(request, response) {
 async function updateStatus(request, response) {
     const userId = request.userId;
     const { status } = request.body;
-    const { tmdbId } = request.params;
+    const { movieId } = request.params;
 
     if (!status) return response.status(400).send({ error: "Missing required information" });
 
     try {
         const movie = await prisma.movie.update({
             where: {
+                id: movieId,
                 userId,
-                tmdbId,
             },
             data: {
                 status,
@@ -175,6 +175,8 @@ async function updateStatus(request, response) {
 
         return response.status(200).send(movie);
     } catch (err) {
+        console.log(err)
+
         return response.status(500).send({ error: err });
     }
 }

@@ -23,6 +23,7 @@ export default function Movie() {
   const tmdbId = params.id;
 
   const [movieStatus, setMovieStatus] = useState("unset");
+  const [movieId, setMovieId] = useState(null);
 
   useEffect(() => {
     async function getMovie() {
@@ -61,14 +62,18 @@ export default function Movie() {
         return;
       }
 
-      const data = await response.json();
-      setMovieStatus(data.status);
-      console.log(data.status);
+      try {
+        const data = await response.json();
+        setMovieStatus(data.status);
+        setMovieId(data.id);
+      } catch (err) {
+        console.log(err);
+      }
     }
 
     getMovieStatus();
     getMovie();
-  }, [tmdbId, token]);
+  }, []);
 
   return (
     <div className="h-full flex gap-1">
@@ -96,6 +101,8 @@ export default function Movie() {
               toast={toast}
               tmdbId={tmdbId}
               movie={movie}
+              title={movie.title}
+              movieId={movieId}
               movieStatus={movieStatus}
               setMovieStatus={setMovieStatus}
             />

@@ -5,10 +5,9 @@
 .select-menu .select-btn {
   display: flex;
   height: 55px;
-  background: #1a202c;
   padding: 20px;
-  font-size: 18px;
-  font-weight: 400;
+  font-size: 20px;
+  font-weight: 600;
   border-radius: 8px;
   align-items: center;
   cursor: pointer;
@@ -53,14 +52,10 @@
   background: #2e3747;
 }
 
-.select-menu .options .option i {
-  font-size: 25px;
-  margin-right: 12px;
-}
-
 .select-menu .options .option .option-text {
   font-size: 20px;
   color: white;
+  font-weight: 600;
 }
 
 .select-btn i {

@@ -51,10 +51,13 @@ export default function Home() {
       }
     }
     getUserMovies();
-  }, [token, filter]);
+  }, [filter]);
 
   useEffect(() => {
-    setData({ results: movies });
+
+    // ignore dups
+    const moviesResults = [...new Map(movies.map((movie) => [movie["id"], movie])).values()];
+    setData({ results: moviesResults });
   }, [movies]);
 
   return (
