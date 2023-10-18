@@ -63,6 +63,18 @@ export default function Login() {
           tokenType: "Bearer",
           authState: { token: data.token, expiresIn: 3600, tokenType: "Bearer" },
         });
+        const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${data.token}`,
+        },
+      });
+
+      const dados = await response.json();
+      if (dados.name) {
+        localStorage.setItem("nomeTela", dados.name);
+      }
         navigate("/home");
       }
     }
