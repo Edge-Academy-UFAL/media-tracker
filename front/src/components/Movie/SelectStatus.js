@@ -38,6 +38,7 @@ export default function SelectStatus({ token, toast, title, tmdbId, movie, movie
       return;
     }
 
+    setMovieStatus("plan");
     toast.current.show({
       severity: "success",
       summary: "Movie saved successfully",
@@ -62,7 +63,7 @@ export default function SelectStatus({ token, toast, title, tmdbId, movie, movie
 
     if (response.status !== 200) {
       const data = await response.json();
-      console.log(data)
+      console.log(data);
       toast.current.show({
         severity: "error",
         summary: "Error",

@@ -37,14 +37,6 @@ export default function Movie() {
 
       const data = await response.json();
 
-      data["year"] = data["release_date"].split("-")[0];
-      data["runtime"] =
-        data["runtime"] > 60 ? `${Math.floor(data["runtime"] / 60)}h ${data["runtime"] % 60}m` : `${data["runtime"]}m`;
-      data["production"] = data["production_companies"].map((company) => company.name).join(", ");
-      data["emptyStars"] = Array(5 - Math.ceil(data["vote_average"] / 2)).fill(0);
-      data["fullStars"] = Array(Math.floor(data["vote_average"] / 2)).fill(0);
-      data["hasHalfStar"] = data["vote_average"] % 2 !== 0;
-      data["genres"] = data["genres"].slice(0, 4);
       setMovie(data);
     }
 
@@ -71,9 +63,13 @@ export default function Movie() {
       }
     }
 
-    getMovieStatus();
-    getMovie();
-  }, []);
+    if (token && tmdbId) {
+      getMovieStatus();
+    }
+    if (token && tmdbId) {
+      getMovie();
+    }
+  }, [tmdbId, token, movieStatus]);
 
   return (
     <div className="h-full flex gap-1">
