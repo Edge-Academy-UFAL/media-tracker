@@ -4,9 +4,9 @@ async function getMovie(request, response) {
     try {
         const { id } = request.params;
         if (!id) return response.status(400).send({ error: "Missing required information" });
-
+        
         const cachedMovie = await redis.get(id);
-
+        
         if (cachedMovie) {
             return response.json(JSON.parse(cachedMovie));
         }
@@ -23,21 +23,25 @@ async function getMovie(request, response) {
         const fetchResponse = await fetch(url, options);
         const movieData = await fetchResponse.json();
 
-        // TODO: add only the data we need, both to the cache and to the response
+        const movie = {
+            id: movieData.id,
+            title: movieData.title,
+            overview: movieData.overview,
+            poster_path: movieData.poster_path,
+            genres: movieData.genres ? (movieData.genres.length > 4 ? movieData.genres.slice(0, 4) : movieData.genres) : [],
+            year: movieData.release_date ? movieData.release_date.split("-")[0] : "Unknown",
+            runtime: movieData.runtime > 60 ? `${Math.floor(movieData.runtime / 60)}h ${movieData.runtime % 60}m` : `${movieData.runtime}m` || "Unknown",
+            production: movieData.production_companies ? (movieData.production_companies.length > 0 ? movieData.production_companies[0].name : "Unknown") : "Unknown",
+            emptyStars: movieData.vote_average ? Array(5 - Math.ceil(movieData.vote_average / 2)).fill(0) : Array(5).fill(0),
+            fullStars: movieData.vote_average ? Array(Math.floor(movieData.vote_average / 2)).fill(0) : Array(0).fill(0),
+            hasHalfStar: movieData.vote_average ? movieData.vote_average % 2 !== 0 : false,
+        }
 
-        movieData.year = movieData.release_date.split("-")[0] || "Unknown";
-        movieData.runtime = movieData.runtime > 60 ? `${Math.floor(movieData.runtime / 60)}h ${movieData.runtime % 60}m` : `${movieData.runtime}m` || "Unknown";
-        console.warn(movieData.production_companies);
-        movieData.production = movieData.production_companies[0] || "Unknown";
-        movieData.emptyStars = Array(5 - Math.ceil(movieData.vote_average / 2)).fill(0);
-        movieData.fullStars = Array(Math.floor(movieData.vote_average / 2)).fill(0);
-        movieData.hasHalfStar = movieData.vote_average % 2 !== 0;
-        movieData.genres = movieData.genres.slice(0, 4);
+        await redis.set(id, JSON.stringify(movie));
 
-        await redis.set(id, JSON.stringify(movieData));
-
-        return response.json(movieData);
+        return response.json(movie);
     } catch (err) {
+        console.log(err);
         response.status(500).send(err);
     }
 }
