@@ -1,7 +1,7 @@
 <br>
 <div align="center">
   <p>
-    <img alt="Mediatracker's logo" src="https://github.com/edge-academy-ufal/media-tracker/blob/main/front/src/assets/mediatracker.svg" height="75" />
+    <img alt="Mediatracker's logo" src="https://github.com/edge-academy-ufal/media-tracker/blob/main/front/src/assets/mediatracker.svg" height="60" />
   </p>
 
 <br>
@@ -11,19 +11,19 @@
 </div>
 
 <p align="center">
-  <img alt="Last Commit" src="https://img.shields.io/github/last-commit/edge-academy-ufal/media-tracker" />
-  <img alt="Github Issues" src="https://img.shields.io/github/issues/edge-academy-ufal/media-tracker" />
-  <img alt="Commit Activity" src="https://img.shields.io/github/commit-activity/m/edge-academy-ufal/media-tracker" />
+  <img alt="Last Commit" src="https://img.shields.io/github/last-commit/edge-academy-ufal/media-tracker?style=for-the-badge" />
+  <img alt="Github Issues" src="https://img.shields.io/github/issues/edge-academy-ufal/media-tracker?style=for-the-badge" />
+  <img alt="Commit Activity" src="https://img.shields.io/github/commit-activity/m/edge-academy-ufal/media-tracker?style=for-the-badge" />
 </p>
 
 <br>
 
 <p align="center">
   <img src="./img/showcase.gif"/>
-  <img src="./img/screenshot_1.png" width="49.7%"/>
-  <img src="./img/screenshot_2.png" width="49.7%"/>
-  <img src="./img/screenshot_3.png" width="49.7%"/>
-  <img src="./img/screenshot_4.png" width="49.7%"/>
+  <img src="./img/screenshot1.png" width="49.7%"/>
+  <img src="./img/screenshot2.png" width="49.7%"/>
+  <img src="./img/screenshot3.png" width="49.7%"/>
+  <img src="./img/screenshot4.png" width="49.7%"/>
 </p>
 
 ---
