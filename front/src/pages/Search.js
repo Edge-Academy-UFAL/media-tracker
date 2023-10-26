@@ -9,12 +9,14 @@ import { FaMagnifyingGlass } from "react-icons/fa6";
 import mediatracker from "../assets/mediatracker.svg";
 import MovieList from "../components/MovieList";
 import { useAuthUser } from "react-auth-kit";
+import Skeleton from "../components/Skeleton";
 
 
 export default function Search() {
-  const [data, setData] = useState({});
+  const [data, setData] = useState({ results: [] });
   const [title, setTitle] = useState("");
   const [userMoviesIds, setUserMoviesIds] = useState([]);
+  const [isLoading, setIsLoading] = useState(title !== "");
   // userMoviesIds = [[1, 'plan'], [2, 'completed'], [3, 'dropped']]
   const authUser = useAuthUser();
 
@@ -89,6 +91,7 @@ export default function Search() {
 
       const response = await received.json();
       setData(response);
+      setIsLoading(false);
     }
 
     getData();
@@ -111,7 +114,27 @@ export default function Search() {
             </span>
           </div>
         </div>
-        <MovieList data={data} page="search" userMoviesIds={userMoviesIds} />
+        {isLoading && (
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 mt-12 overflow-y-auto">
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+          </div>
+        )}
+        {!isLoading && data.results?.length === 0 ? (
+          <div className="overflow-y-hidden h-full items-center flex justify-center">
+            <div className="flex items-center justify-center text-2xl font-semibold text-white/50 italic">
+              Start typing to search a movie you like
+            </div>
+          </div>
+        ) : (
+          <MovieList data={data} userMoviesIds={userMoviesIds} />
+        )}
       </Body>
     </div>
   );

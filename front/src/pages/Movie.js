@@ -26,21 +26,7 @@ export default function Movie() {
   const [movieId, setMovieId] = useState(null);
 
   useEffect(() => {
-    async function getMovie() {
-      const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/movies/searchById/${tmdbId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const data = await response.json();
-
-      setMovie(data);
-    }
-
-    async function getMovieStatus() {
+   async function getMovieStatus() {
       const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/movies/${tmdbId}`, {
         method: "GET",
         headers: {
@@ -66,10 +52,25 @@ export default function Movie() {
     if (token && tmdbId) {
       getMovieStatus();
     }
-    if (token && tmdbId) {
-      getMovie();
-    }
-  }, [tmdbId, token, movieStatus]);
+  }, [token, movieStatus]);
+
+  useEffect(() => {
+     async function getMovie() {
+      const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/movies/searchById/${tmdbId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+      console.log(data)
+      setMovie(data);
+     }
+    
+    if (token) getMovie();
+  }, [token]);
 
   return (
     <div className="h-full flex gap-1">

@@ -4,24 +4,54 @@ import { useAuthUser } from "react-auth-kit";
 import MovieFilter from "../components/Home/MovieFilter";
 import Sidebar from "../components/Sidebar/Sidebar";
 import Body from "../components/Body";
+import emptyIcon from "../assets/empty-icon.png";
+import plusIcon from "../assets/plus-icon.svg";
 
 import mediatracker from "../assets/mediatracker.svg";
 import MovieList from "../components/MovieList";
+import Skeleton from "../components/Skeleton";
+import { Link } from "react-router-dom";
 
 export default function Home() {
-  const [data, setData] = useState({});
+  const [data, setData] = useState({ results: [] });
   const [movies, setMovies] = useState([]);
-  const [filter, setFilter] = useState("completed");
+  const [completed, setCompleted] = useState([]);
+  const [dropped, setDropped] = useState([]);
+  const [plan, setPlan] = useState([]);
+  const [filter, setFilter] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isChecking, setIsChecking] = useState(false);
   const authUser = useAuthUser();
 
   const token = authUser().token;
+
+  async function getMovie(tmdbId) {
+    const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/movies/searchById/${tmdbId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const movie = await response.json();
+
+    return movie;
+  }
 
   useEffect(() => {
     setData({ results: [] });
     setMovies([]);
 
-    async function getMovie(tmdbId) {
-      const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/movies/searchById/${tmdbId}`, {
+    async function getCompletedMovies(){
+      if (!token) return;
+      if (completed.length > 0) {
+        return setMovies(completed);
+      }
+
+      setIsLoading(true);
+
+      const completedReq = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/movies?status=completed`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -29,36 +59,91 @@ export default function Home() {
         },
       });
 
-      const movie = await response.json();
+      const completedIds = await completedReq.json();
 
-      setMovies((movies) => [...movies, movie]);
-    }
-
-    async function getUserMovies() {
-      const received = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/movies?status=${filter}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const movies = await received.json();
-      if (movies.length > 0) {
-        movies.forEach((movie) => {
-          getMovie(movie.tmdbId);
+      if (completedIds.length > 0) {
+        completedIds.forEach(async (movie) => {
+          const movieData = await getMovie(movie.tmdbId);
+          setCompleted((completed) => [...completed, movieData]);
+          setMovies((movies) => [...movies, movieData]);
+          setIsChecking(false);
         });
       }
     }
-    getUserMovies();
+
+    async function getDroppedMovies(){
+      if (!token) return;
+      if (dropped.length > 0) {
+        return setMovies(dropped);
+      }
+
+      setIsLoading(true);
+
+      const droppedReq = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/movies?status=dropped`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const droppedIds = await droppedReq.json();
+
+      if (droppedIds.length > 0) {
+        droppedIds.forEach(async (movie) => {
+          const movieData = await getMovie(movie.tmdbId);
+          setDropped((dropped) => [...dropped, movieData]);
+          setMovies((movies) => [...movies, movieData]);
+          setIsChecking(false);
+        });
+      }
+    }
+
+    async function getPlanMovies() {
+      if (!token) return;
+      if (plan.length > 0) {
+        return setMovies(plan);
+      }
+
+      setIsLoading(true);
+      const planReq = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/movies?status=plan`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const planIds = await planReq.json();
+
+      if (planIds.length > 0) {
+        planIds.forEach(async (movie) => {
+          const movieData = await getMovie(movie.tmdbId);
+          setPlan((plan) => [...plan, movieData]);
+          setMovies((movies) => [...movies, movieData]);
+          setIsChecking(false);
+        });
+      }
+    }
+
+    setIsChecking(true);
+    if (filter === "completed") getCompletedMovies();
+    else if (filter === "dropped") getDroppedMovies();
+    else if (filter === "plan") getPlanMovies();
   }, [filter]);
 
   useEffect(() => {
-
-    // ignore dups
     const moviesResults = [...new Map(movies.map((movie) => [movie["id"], movie])).values()];
-    setData({ results: moviesResults });
+    const moviesResultsFiltered = moviesResults.filter((movie) => movie.id !== undefined);
+    setData({ results: moviesResultsFiltered });
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1600);
   }, [movies]);
+
+  useEffect(() => {
+    setFilter("completed");
+  }, []);
 
   return (
     <div className="h-full flex gap-1">
@@ -68,7 +153,34 @@ export default function Home() {
           <img src={mediatracker} alt="mediatracker's logo" className="h-10"></img>
           <MovieFilter setFilter={setFilter} filter={filter} />
         </div>
-        <MovieList data={data} page="home" />
+        {isLoading && (
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 mt-12 overflow-y-auto">
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+          </div>
+        )}
+        {data.results.length < 0 && !isLoading && <MovieList data={data} />}
+        {!isLoading && !isChecking && data.results.length > 0 && (
+          <>
+            <div className="flex flex-col items-center h-full justify-center font-medium">
+              <img src={emptyIcon} alt="Your movie library is empty" className="h-44" />
+              <h2 className="text-5xl pt-10">Your movie library is empty</h2>
+              <h3 className="italic text-white/50 text-xl pt-4">Add a movie to your collection</h3>
+            </div>
+            <Link
+              to="/search"
+              className="bg-primary-700 hover:brightness-125 transition text-white h-20 w-20 rounded-full absolute bottom-10 right-10 shadow-lg flex items-center justify-center"
+            >
+              <img src={plusIcon} alt="Plus sign" className="w-10" />
+            </Link>
+          </>
+        )}
       </Body>
     </div>
   );
