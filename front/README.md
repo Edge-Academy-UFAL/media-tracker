@@ -1,70 +1,99 @@
-# Getting Started with Create React App
+<br>
+<div align="center">
+  <p>
+    <img alt="Mediatracker's logo" src="https://github.com/edge-academy-ufal/media-tracker/blob/main/front/src/assets/mediatracker.svg" height="75" />
+  </p>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<br>
 
-## Available Scripts
+# 🎥 mediatracker, Track all your movies in one place 🎞️
 
-In the project directory, you can run:
+</div>
 
-### `npm start`
+<p align="center">
+  <img alt="Last Commit" src="https://img.shields.io/github/last-commit/edge-academy-ufal/media-tracker" />
+  <img alt="Github Issues" src="https://img.shields.io/github/issues/edge-academy-ufal/media-tracker" />
+  <img alt="Commit Activity" src="https://img.shields.io/github/commit-activity/m/edge-academy-ufal/media-tracker" />
+</p>
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+<br>
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+<p align="center">
+  <img src="./img/showcase.gif"/>
+  <img src="./img/screenshot_1.png" width="49.7%"/>
+  <img src="./img/screenshot_2.png" width="49.7%"/>
+  <img src="./img/screenshot_3.png" width="49.7%"/>
+  <img src="./img/screenshot_4.png" width="49.7%"/>
+</p>
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🧪 Technologies
 
-### `npm run build`
+This project was developed using the following technologies and libraries:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+<a href="https://reactjs.org/"><img src="https://img.shields.io/badge/React.js-61DAFB?style=for-the-badge&logo=react&logoColor=black" height="30px"></a>
+<a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/TailwindCSS-38B2AC?style=for-the-badge&logo=tailwindcss&logoColor=white" height="30px"></a>
+<a href="https://expressjs.com/" target="_blank"><img alt="Express" height="31px" src="https://img.shields.io/badge/-Express-000000?style=for-the-badge&logo=express&logoColor=white" /></a>
+<a href="https://nodejs.org/en/" target="_blank"><img alt="Node.js" height="30px" src="https://img.shields.io/badge/-Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white" /></a>
+<a href="https://www.prisma.io/"><img src="https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white" height="30px"></a>
+<a href="https://redis.io/"><img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white" height="30px"></a>
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🚀 How to run
 
-### `npm run eject`
+To run this in your local machine, clone this repo and run the command:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```sh
+  cd front
+  # Installing dependencies
+  bun install # or npm install or yarn
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+installing all dependencies. After that, just start:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```sh
+  # Starting project
+  bun start # or npm start or yarn start
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+And it will appear on `http://localhost:3000`.
 
-## Learn More
+**⚠ Also, make sure to fill the info needed in a .env file using the [.env.example](https://github.com/edge-academy-ufal/media-tracker/blob/main/front/.env.example) file as an example ⚠**
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+And for the server, you will need to install the dependencies and start the server:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```sh
+  cd server
+  # Installing dependencies
+  bun install # or npm install or yarn
 
-### Code Splitting
+  # Starting server
+  docker-compose up -d
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+And it will appear on `http://localhost:3001` (or the port you set in the .env file)
 
-### Analyzing the Bundle Size
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 🎨 Design
 
-### Making a Progressive Web App
+Our design was made using Figma, and you can check it out here:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+<a href="https://www.figma.com/file/wyrRcP9aJFiWsxoUX5ay2e/Media-Tracker?type=design&mode=design&t=j6fKtUNAJN3xq7tL-1"><img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white" height="30px"></a>
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 📋 API Documentation
 
-### Deployment
+You can check the API documentation in Insomnia here:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+<a href="https://github.com/edge-academy-ufal/media-tracker/blob/main/server/insomnia.json" target="_blank"><img alt="Insomnia" height="30px" src="https://img.shields.io/badge/-Insomnia-5849BE?style=for-the-badge&logo=insomnia&logoColor=white" /></a>
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 🤝 Contributing
+
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/edge-academy-ufal/media-tracker/issues).
+
