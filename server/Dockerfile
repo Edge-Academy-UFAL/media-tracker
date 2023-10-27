@@ -10,5 +10,6 @@ RUN npm install
 EXPOSE 3001
 
 RUN npx prisma generate
+RUN npx prisma db push
 
 CMD [ "npm","run","start"]
