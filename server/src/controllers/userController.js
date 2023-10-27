@@ -157,20 +157,21 @@ async function addMovie(request, response) {
 
 async function deleteMovie(request, response) {
     const userId = request.userId;
-    const { tmdbId } = request.params;
+    const { movieId } = request.params;
 
-    if (!tmdbId) return response.status(400).send({ error: "Missing required information" });
+    if (!movieId) return response.status(400).send({ error: "Missing required information" });
 
     try {
         await prisma.movie.delete({
             where: {
+                id: movieId,
                 userId,
-                tmdbId,
             },
         });
 
         response.status(200).send({ message: "Movie deleted" });
     } catch (err) {
+        console.log(err);
         response.status(500).send({ error: err });
     }
 }
@@ -195,7 +196,7 @@ async function updateStatus(request, response) {
 
         return response.status(200).send(movie);
     } catch (err) {
-        console.log(err)
+        console.log(err);
 
         return response.status(500).send({ error: err });
     }

@@ -66,9 +66,9 @@ export default function Home() {
           const movieData = await getMovie(movie.tmdbId);
           setCompleted((completed) => [...completed, movieData]);
           setMovies((movies) => [...movies, movieData]);
-          setIsChecking(false);
         });
       }
+      setIsChecking(false);
     }
 
     async function getDroppedMovies(){
@@ -94,9 +94,9 @@ export default function Home() {
           const movieData = await getMovie(movie.tmdbId);
           setDropped((dropped) => [...dropped, movieData]);
           setMovies((movies) => [...movies, movieData]);
-          setIsChecking(false);
         });
       }
+      setIsChecking(false);
     }
 
     async function getPlanMovies() {
@@ -121,11 +121,11 @@ export default function Home() {
           const movieData = await getMovie(movie.tmdbId);
           setPlan((plan) => [...plan, movieData]);
           setMovies((movies) => [...movies, movieData]);
-          setIsChecking(false);
         });
       }
+      setIsChecking(false);
     }
-
+    
     setIsChecking(true);
     if (filter === "completed") getCompletedMovies();
     else if (filter === "dropped") getDroppedMovies();
@@ -138,7 +138,7 @@ export default function Home() {
     setData({ results: moviesResultsFiltered });
     setTimeout(() => {
       setIsLoading(false);
-    }, 1600);
+    }, 1000);
   }, [movies]);
 
   useEffect(() => {
@@ -165,8 +165,8 @@ export default function Home() {
             <Skeleton />
           </div>
         )}
-        {data.results.length < 0 && !isLoading && <MovieList data={data} />}
-        {!isLoading && !isChecking && data.results.length > 0 && (
+        {data.results.length > 0 && !isLoading && <MovieList data={data} />}
+        {!isLoading && !isChecking && data.results.length === 0 && (
           <>
             <div className="flex flex-col items-center h-full justify-center font-medium">
               <img src={emptyIcon} alt="Your movie library is empty" className="h-44" />
