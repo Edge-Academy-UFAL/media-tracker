@@ -3,13 +3,14 @@ FROM node:18.13.0
 WORKDIR /usr/app
 
 COPY . .
-RUN rm -r package-lock.json node_modules
+
 RUN npm install
 
 
 EXPOSE 3001
 
 RUN npx prisma generate
-RUN npx prisma db push
+RUN npx prisma migrate dev
+# RUN npx prisma migrate dev --name init
 
-CMD [ "npm","run","start"]
+CMD ["npm","run","start"]
