@@ -10,6 +10,7 @@ router.post("/login", userController.loginUser);
 router.get("/movies", loginRequired, userController.getMovies);
 router.get("/movies/:tmdbId", loginRequired, userController.getMovie);
 router.post("/movies/:tmdbId", loginRequired, userController.addMovie);
+router.delete("/movies/:tmdbId", loginRequired, userController.deleteMovie);
 router.put("/movies/:movieId", loginRequired, userController.updateStatus);
 
 module.exports = router;
