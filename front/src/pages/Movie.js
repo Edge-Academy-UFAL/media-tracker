@@ -27,7 +27,7 @@ export default function Movie() {
 
   useEffect(() => {
    async function getMovieStatus() {
-      const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/movies/${tmdbId}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/users/movies/${tmdbId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -56,7 +56,7 @@ export default function Movie() {
 
   useEffect(() => {
      async function getMovie() {
-      const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/movies/searchById/${tmdbId}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/movies/searchById/${tmdbId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

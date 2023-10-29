@@ -26,7 +26,7 @@ export default function Home() {
   const token = authUser().token;
 
   async function getMovie(tmdbId) {
-    const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/movies/searchById/${tmdbId}`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/movies/searchById/${tmdbId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -51,7 +51,7 @@ export default function Home() {
 
       setIsLoading(true);
 
-      const completedReq = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/movies?status=completed`, {
+      const completedReq = await fetch(`${process.env.REACT_APP_API_URL}/users/movies?status=completed`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -79,7 +79,7 @@ export default function Home() {
 
       setIsLoading(true);
 
-      const droppedReq = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/movies?status=dropped`, {
+      const droppedReq = await fetch(`${process.env.REACT_APP_API_URL}/users/movies?status=dropped`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -106,7 +106,7 @@ export default function Home() {
       }
 
       setIsLoading(true);
-      const planReq = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/movies?status=plan`, {
+      const planReq = await fetch(`${process.env.REACT_APP_API_URL}/users/movies?status=plan`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

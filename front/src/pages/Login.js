@@ -39,7 +39,7 @@ export default function Login() {
         password,
       };
 
-      const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/login`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/users/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -63,7 +63,7 @@ export default function Login() {
           tokenType: "Bearer",
           authState: { token: data.token, expiresIn: 3600, tokenType: "Bearer" },
         });
-        const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/users`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

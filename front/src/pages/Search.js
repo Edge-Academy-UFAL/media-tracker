@@ -24,7 +24,7 @@ export default function Search() {
 
   useEffect(() => {
     async function getUserMoviesPlan() {
-      const received = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/movies?status=plan`, {
+      const received = await fetch(`${process.env.REACT_APP_API_URL}/users/movies?status=plan`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -41,7 +41,7 @@ export default function Search() {
     }
 
     async function getUserMoviesCompleted() {
-      const received = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/movies?status=completed`, {
+      const received = await fetch(`${process.env.REACT_APP_API_URL}/users/movies?status=completed`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -58,7 +58,7 @@ export default function Search() {
     }
 
     async function getUserMoviesDropped() {
-      const received = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/movies?status=dropped`, {
+      const received = await fetch(`${process.env.REACT_APP_API_URL}/users/movies?status=dropped`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

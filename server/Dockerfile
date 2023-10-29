@@ -10,7 +10,7 @@ RUN npm install
 EXPOSE 3001
 
 RUN npx prisma generate
-RUN npx prisma migrate dev
+# RUN npx prisma migrate dev
 # RUN npx prisma migrate dev --name init
 
 CMD ["npm","run","start"]

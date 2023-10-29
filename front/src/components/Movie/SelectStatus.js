@@ -16,7 +16,7 @@ export default function SelectStatus({ token, toast, title, tmdbId, movie, movie
   async function saveMovie(movie) {
     if (!token) return;
 
-    const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/movies/${tmdbId}`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/users/movies/${tmdbId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -49,7 +49,7 @@ export default function SelectStatus({ token, toast, title, tmdbId, movie, movie
   async function changeStatus(status) {
     if (!token) return;
 
-    const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/movies/${movieId}`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/users/movies/${movieId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -83,7 +83,7 @@ export default function SelectStatus({ token, toast, title, tmdbId, movie, movie
     if (!token) return;
     if (movieStatus === "unset") return;
 
-    const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/users/movies/${movieId}`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/users/movies/${movieId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
