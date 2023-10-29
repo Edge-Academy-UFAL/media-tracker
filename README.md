@@ -19,11 +19,11 @@
 <br>
 
 <p align="center">
-  <img src="./img/showcase.gif"/>
-  <img src="./img/screenshot1.png" width="49.7%"/>
-  <img src="./img/screenshot2.png" width="49.7%"/>
-  <img src="./img/screenshot3.png" width="49.7%"/>
-  <img src="./img/screenshot4.png" width="49.7%"/>
+  <img src="https://raw.githubusercontent.com/edge-academy-ufal/media-tracker/main/img/showcase.gif"/>
+</p>
+<p align="center">
+    <img align="center" width="49%" src="https://raw.githubusercontent.com/edge-academy-ufal/media-tracker/main/img/screenshot1.png" /> <img align="center" width="49%" src="https://raw.githubusercontent.com/edge-academy-ufal/media-tracker/main/img/screenshot2.png" />
+    <img align="center" width="49%" src="https://raw.githubusercontent.com/edge-academy-ufal/media-tracker/main/img/screenshot3.png" /> <img align="center" width="49%" src="https://raw.githubusercontent.com/edge-academy-ufal/media-tracker/main/img/screenshot4.png" />
 </p>
 
 ---
@@ -96,4 +96,3 @@ You can check the API documentation in Insomnia here:
 ## 🤝 Contributing
 
 Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/edge-academy-ufal/media-tracker/issues).
-
