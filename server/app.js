@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-const whiteList = ["http://localhost:3000", "https://media-tracker-iota.vercel.app/"];
+const whiteList = ["http://localhost:3000", "https://media-tracker-iota.vercel.app"];
 
 const corsOptions = {
     origin(origin, callback) {
