@@ -9,7 +9,20 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors());
+
+const whiteList = ["http://localhost:3000", "https://media-tracker-iota.vercel.app/"];
+
+const corsOptions = {
+    origin(origin, callback) {
+        if (whiteList.indexOf(origin) !== -1 || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+};
+
+app.use(cors(corsOptions));
 
 app.use((request, response, next) => {
     response.header("Access-Control-Allow-Origin", "*");
