@@ -36,5 +36,9 @@ const movieRoute = require("./src/routes/movieRoute");
 
 app.use("/users", userRoute);
 app.use("/movies", movieRoute);
+// / have a hello world route
+app.get("/", (request, response) => {
+    response.send("Hello World");
+});
 
 module.exports = app;
