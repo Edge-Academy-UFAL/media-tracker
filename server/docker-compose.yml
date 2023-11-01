@@ -1,4 +1,4 @@
-version: '3'
+version: '3.5'
 
 services:
   app:
@@ -8,8 +8,8 @@ services:
       - postgres
     ports:
       - "3001:3001"
-    volumes:
-      - .:/usr/app
+    
+    
     environment:
       NODE_ENV: dev
       PORT: 3001
