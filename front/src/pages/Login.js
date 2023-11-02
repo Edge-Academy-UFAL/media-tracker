@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSignIn } from "react-auth-kit";
-import { Link, useNavigate } from "react-router-dom";
-
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import Loading from "../components/Loading/Loanding";
 
 import { useRef } from "react";
 import { Toast } from "primereact/toast";
@@ -17,7 +17,23 @@ export default function Login() {
   const navigate = useNavigate();
   const signIn = useSignIn();
   const toast = useRef(null);
+  const newUserNotification = useRef(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const newUser = queryParams.get("newUser");
 
+  useEffect(() => {
+    if (newUser && !newUserNotification.current) {
+      toast.current.show({
+        severity: "success",
+        summary: "Success",
+        detail: "Account created successfully",
+        life: 6000,
+      });
+      newUserNotification.current = true;
+    }
+  }, [newUser]);
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -32,6 +48,7 @@ export default function Login() {
         life: 8000,
       });
     } else {
+      setIsLoading(true);
       toast.current.clear();
 
       const values = {
@@ -49,6 +66,7 @@ export default function Login() {
       const data = await response.json();
 
       if (data.error) {
+        setIsLoading(false);
         toast.current.show({
           severity: "error",
           summary: "Error",
@@ -56,7 +74,6 @@ export default function Login() {
           life: 8000,
         });
       } else {
-        toast.current.clear();
         signIn({
           token: data.token,
           expiresIn: 3600,
@@ -64,69 +81,74 @@ export default function Login() {
           authState: { token: data.token, expiresIn: 3600, tokenType: "Bearer" },
         });
         const response = await fetch(`${process.env.REACT_APP_API_URL}/users`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${data.token}`,
-        },
-      });
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${data.token}`,
+          },
+        });
 
-      const dados = await response.json();
-      if (dados.name) {
-        localStorage.setItem("nomeTela", dados.name);
-      }
-        navigate("/home");
+        const dados = await response.json();
+        if (dados.name) {
+          localStorage.setItem("nomeTela", dados.name);
+        }
+        setIsLoading(false);
+        navigate("/home?login=true");
       }
     }
   };
   return (
     <div className="flex h-full w-full flex-1 items-center flex-col justify-center px-6 py-12 lg:px-8 text-white">
-      <div className="rounded-xl bg-primary-500 px-40 py-12 my-16">
-        <Toast ref={toast} />
-        <div className="flex flex-col items-center justify-center sm:mx-auto sm:w-full sm:max-w-sm">
-          <img className="mt-8 w-80" src={mediatracker} alt="mediatracker's logo"></img>
-          <h2 className="mt-24 text-center text-4xl font-bold leading-9 tracking-tight">Sign in to your account</h2>
-        </div>
-
-        <form className="space-y-6 mt-16" action="#" method="POST">
-          <input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-            placeholder="E-mail"
-            className="block w-full rounded-xl border-0 py-5 px-4 text-white text-lg outline-none shadow-sm bg-primary-700"
-          />
-
-          <input
-            id="password"
-            name="password"
-            type="password"
-            autoComplete="current-password"
-            required
-            placeholder="Password"
-            className="block w-full rounded-xl border-0 py-5 px-4 text-white text-lg outline-none shadow-sm bg-primary-700"
-          />
-
-          <div>
-            <button
-              type="submit"
-              className="flex w-full text-center justify-center rounded-xl bg-primary-300 px-3 py-4 text-2xl font-semibold leading-6 text-white shadow-sm transition hover:brightness-105"
-              onClick={handleLogin}
-            >
-              Sign in
-            </button>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <div className="rounded-xl bg-primary-500 px-40 py-12 my-16">
+          <Toast ref={toast} />
+          <div className="flex flex-col items-center justify-center sm:mx-auto sm:w-full sm:max-w-sm">
+            <img className="mt-8 w-80" src={mediatracker} alt="mediatracker's logo"></img>
+            <h2 className="mt-24 text-center text-4xl font-bold leading-9 tracking-tight">Sign in to your account</h2>
           </div>
-        </form>
 
-        <p className="mt-6 text-center text-xl text-white opacity-30">
-          Don’t have an account?{" "}
-          <Link to="/" className="underline">
-            Create here
-          </Link>
-        </p>
-      </div>
+          <form className="space-y-6 mt-16" action="#" method="POST">
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              placeholder="E-mail"
+              className="block w-full rounded-xl border-0 py-5 px-4 text-white text-lg outline-none shadow-sm bg-primary-700"
+            />
+
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+              required
+              placeholder="Password"
+              className="block w-full rounded-xl border-0 py-5 px-4 text-white text-lg outline-none shadow-sm bg-primary-700"
+            />
+
+            <div>
+              <button
+                type="submit"
+                className="flex w-full text-center justify-center rounded-xl bg-primary-300 px-3 py-4 text-2xl font-semibold leading-6 text-white shadow-sm transition hover:brightness-105"
+                onClick={handleLogin}
+              >
+                Sign in
+              </button>
+            </div>
+          </form>
+
+          <p className="mt-6 text-center text-xl text-white opacity-30">
+            Don’t have an account?{" "}
+            <Link to="/" className="underline">
+              Create here
+            </Link>
+          </p>
+        </div>
+      )}
     </div>
   );
 }

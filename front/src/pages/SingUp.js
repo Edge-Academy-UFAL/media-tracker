@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useRef } from "react";
 import { Toast } from "primereact/toast";
+import Loading from "../components/Loading/Loanding";
 
 //theme
 import "primereact/resources/themes/lara-light-indigo/theme.css";
@@ -13,6 +14,7 @@ import mediatracker from "../assets/mediatracker.svg";
 export default function SignUp() {
   const toast = useRef(null);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
 
   useEffect(() => {
@@ -75,6 +77,7 @@ export default function SignUp() {
           life: 8000,
         });
       } else {
+        setIsLoading(true);
         toast.current.clear();
         const values = {
           name,
@@ -91,6 +94,7 @@ export default function SignUp() {
         });
         const data = await response.json();
         if (data.error) {
+          setIsLoading(false);
           toast.current.show({
             severity: "error",
             summary: "Erro",
@@ -98,7 +102,8 @@ export default function SignUp() {
             life: 8000,
           });
         } else {
-          navigate("/login");
+          setIsLoading(false);
+          navigate("/login?newUser=true");
         }
       }
     }
@@ -106,73 +111,77 @@ export default function SignUp() {
 
   return (
     <div className="flex h-full w-full flex-1 items-center flex-col justify-center text-white">
-      <div className="rounded-xl bg-primary-500 px-40 py-12">
-        <Toast ref={toast} />
-        <div className="flex flex-col items-center justify-center sm:mx-auto sm:w-full sm:max-w-sm">
-          <img className="mt-2 w-80" src={mediatracker} alt="mediatracker's logo"></img>
-          <h2 className="mt-16 text-center text-4xl font-bold leading-9 tracking-tight">Create your account</h2>
-        </div>
-
-        <form className="space-y-6 mt-12" action="#">
-          <input
-            id="name"
-            maxLength={20}
-            name="text"
-            type="email"
-            autoComplete="email"
-            required
-            placeholder="Name"
-            className="block w-full rounded-xl border-0 py-5 px-4 text-white text-lg outline-none shadow-sm bg-primary-700"
-          />
-
-          <input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-            placeholder="E-mail"
-            className="block w-full rounded-xl border-0 py-5 px-4 text-white text-lg outline-none shadow-sm bg-primary-700"
-            onChange={handleEmailChange}
-            onBlur={validateEmail}
-          />
-
-          <input
-            id="password"
-            name="password"
-            type="password"
-            autoComplete="current-password"
-            required
-            placeholder="Password"
-            className="block w-full rounded-xl border-0 py-5 px-4 text-white text-lg outline-none shadow-sm bg-primary-700"
-          />
-          <input
-            id="confirmPassword"
-            name="confirmPassword"
-            type="password"
-            autoComplete="current-confirm-password"
-            required
-            placeholder="Confirm Password"
-            className="block w-full rounded-xl border-0 py-5 px-4 text-white text-lg outline-none shadow-sm bg-primary-700"
-          />
-
-          <div>
-            <button
-              type="submit"
-              className="flex w-full text-center justify-center rounded-xl bg-primary-300 px-3 py-4 text-2xl font-semibold leading-6 text-white shadow-sm transition hover:brightness-105"
-              onClick={handleSignUp}
-            >
-              Sign up
-            </button>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <div className="rounded-xl bg-primary-500 px-40 py-12">
+          <Toast ref={toast} />
+          <div className="flex flex-col items-center justify-center sm:mx-auto sm:w-full sm:max-w-sm">
+            <img className="mt-2 w-80" src={mediatracker} alt="mediatracker's logo"></img>
+            <h2 className="mt-16 text-center text-4xl font-bold leading-9 tracking-tight">Create your account</h2>
           </div>
-          <p className="mt-6 text-center text-xl text-white opacity-30">
-            Already have an account?{" "}
-            <Link to="/login" className="underline">
-              Login
-            </Link>
-          </p>
-        </form>
-      </div>
+
+          <form className="space-y-6 mt-12" action="#">
+            <input
+              id="name"
+              maxLength={20}
+              name="text"
+              type="email"
+              autoComplete="email"
+              required
+              placeholder="Name"
+              className="block w-full rounded-xl border-0 py-5 px-4 text-white text-lg outline-none shadow-sm bg-primary-700"
+            />
+
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              placeholder="E-mail"
+              className="block w-full rounded-xl border-0 py-5 px-4 text-white text-lg outline-none shadow-sm bg-primary-700"
+              onChange={handleEmailChange}
+              onBlur={validateEmail}
+            />
+
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+              required
+              placeholder="Password"
+              className="block w-full rounded-xl border-0 py-5 px-4 text-white text-lg outline-none shadow-sm bg-primary-700"
+            />
+            <input
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              autoComplete="current-confirm-password"
+              required
+              placeholder="Confirm Password"
+              className="block w-full rounded-xl border-0 py-5 px-4 text-white text-lg outline-none shadow-sm bg-primary-700"
+            />
+
+            <div>
+              <button
+                type="submit"
+                className="flex w-full text-center justify-center rounded-xl bg-primary-300 px-3 py-4 text-2xl font-semibold leading-6 text-white shadow-sm transition hover:brightness-105"
+                onClick={handleSignUp}
+              >
+                Sign up
+              </button>
+            </div>
+            <p className="mt-6 text-center text-xl text-white opacity-30">
+              Already have an account?{" "}
+              <Link to="/login" className="underline">
+                Login
+              </Link>
+            </p>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

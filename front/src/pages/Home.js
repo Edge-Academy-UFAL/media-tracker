@@ -21,6 +21,7 @@ export default function Home() {
   const [filter, setFilter] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isChecking, setIsChecking] = useState(false);
+
   const authUser = useAuthUser();
 
   const token = authUser().token;
@@ -43,7 +44,7 @@ export default function Home() {
     setData({ results: [] });
     setMovies([]);
 
-    async function getCompletedMovies(){
+    async function getCompletedMovies() {
       if (!token) return;
       if (completed.length > 0) {
         return setMovies(completed);
@@ -71,7 +72,7 @@ export default function Home() {
       setIsChecking(false);
     }
 
-    async function getDroppedMovies(){
+    async function getDroppedMovies() {
       if (!token) return;
       if (dropped.length > 0) {
         return setMovies(dropped);
@@ -125,7 +126,7 @@ export default function Home() {
       }
       setIsChecking(false);
     }
-    
+
     setIsChecking(true);
     if (filter === "completed") getCompletedMovies();
     else if (filter === "dropped") getDroppedMovies();
