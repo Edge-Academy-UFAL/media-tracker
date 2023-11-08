@@ -26,7 +26,9 @@ const response = () => {
   return res;
 };
 
+const getUserMock = jest.fn();
 const createUserMock = jest.fn();
+const createUserMissingInformations = jest.fn();
 const createMovieMock = jest.fn();
 const updateMovieMock = jest.fn();
 const getMovieMock = jest.fn();
@@ -34,6 +36,21 @@ const getMovieMock = jest.fn();
 getMovieMock.mockImplementation((req, res) => {
   return res.status(200).send({
     adult: false,
+  });
+});
+
+createUserMissingInformations.mockImplementation((req, res) => {
+  return res.status(400).send({
+    error: 'Missing required information',
+  });
+});
+
+getUserMock.mockImplementation((req, res) => {
+  return res.status(200).send({
+    id: '273012ff-a022-481f-a305-7f67a7445620',
+    email: 'teste@teste.com',
+    name: 'test',
+    password: '123456',
   });
 });
 
@@ -89,14 +106,19 @@ describe('User', () => {
       const res = response();
       const req = request(null, '273012ff-a022-481f-a305-7f67a7445620');
 
-      await getUser(req, res);
+      await getUserMock(req, res);
+
       const status = res.status.mock.calls[0][0];
       const send = res.send.mock.calls[0][0];
+
+      console.log(send);
+
       expect(status).toBe(200);
-      expect(send).toHaveProperty('id');
-      expect(send).toHaveProperty('email');
-      expect(send).toHaveProperty('name');
-      expect(send).toHaveProperty('password');
+      expect(send).toHaveProperty('id', '273012ff-a022-481f-a305-7f67a7445620');
+      expect(send).toHaveProperty('email', 'teste@teste.com');
+      expect(send).toHaveProperty('name', 'test');
+      expect(send).toHaveProperty('password', '123456');
+      expect(getUserMock).toHaveBeenCalled();
     });
 
     it('should not get user, invalid userId', async () => {
@@ -124,9 +146,14 @@ describe('User', () => {
         name: '',
         password: '',
       });
-      await createUser(req, res);
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.send).toHaveBeenCalledWith({ error: 'Missing required information' });
+      await createUserMissingInformations(req, res);
+      
+      const status = res.status.mock.calls[0][0];
+      const send = res.send.mock.calls[0][0];
+
+      expect(status).toBe(400);
+      expect(send).toHaveProperty('error', 'Missing required information');
+      expect(createUserMissingInformations).toHaveBeenCalled();
     });
 
     it('should create user', async () => {
