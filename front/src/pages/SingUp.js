@@ -93,7 +93,7 @@ export default function SignUp() {
           body: JSON.stringify(values),
         });
         const data = await response.json();
-        if (data.error) {
+        if (data.status === 400 || data.status === 500) {
           setIsLoading(false);
           toast.current.show({
             severity: "error",

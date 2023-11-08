@@ -11,13 +11,11 @@ import MovieList from "../components/MovieList";
 import { useAuthUser } from "react-auth-kit";
 import Skeleton from "../components/Skeleton";
 
-
 export default function Search() {
   const [data, setData] = useState({ results: [] });
   const [title, setTitle] = useState("");
   const [userMoviesIds, setUserMoviesIds] = useState([]);
   const [isLoading, setIsLoading] = useState(title !== "");
-  // userMoviesIds = [[1, 'plan'], [2, 'completed'], [3, 'dropped']]
   const authUser = useAuthUser();
 
   const token = authUser().token;
@@ -35,7 +33,7 @@ export default function Search() {
       const movies = await received.json();
       if (movies.length > 0) {
         movies.forEach((movie) => {
-          setUserMoviesIds((userMoviesIds) => [...userMoviesIds, [movie.tmdbId, 'plan']]);
+          setUserMoviesIds((userMoviesIds) => [...userMoviesIds, [movie.tmdbId, "plan"]]);
         });
       }
     }
@@ -52,7 +50,7 @@ export default function Search() {
       const movies = await received.json();
       if (movies.length > 0) {
         movies.forEach((movie) => {
-          setUserMoviesIds((userMoviesIds) => [...userMoviesIds, [movie.tmdbId, 'completed']]);
+          setUserMoviesIds((userMoviesIds) => [...userMoviesIds, [movie.tmdbId, "completed"]]);
         });
       }
     }
@@ -69,7 +67,7 @@ export default function Search() {
       const movies = await received.json();
       if (movies.length > 0) {
         movies.forEach((movie) => {
-          setUserMoviesIds((userMoviesIds) => [...userMoviesIds, [movie.tmdbId, 'dropped']]);
+          setUserMoviesIds((userMoviesIds) => [...userMoviesIds, [movie.tmdbId, "dropped"]]);
         });
       }
     }
@@ -79,23 +77,41 @@ export default function Search() {
     getUserMoviesDropped();
   }, [token]);
 
-  useEffect(() => {
-    async function getData() {
-      const received = await fetch(`https://api.themoviedb.org/3/search/movie?query=${title}`, {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${process.env.REACT_APP_TOKEN}`,
-        },
-      });
+  // useEffect(() => {
+  //   async function getData() {
+  //     const received = await fetch(`https://api.themoviedb.org/3/search/movie?query=${title}`, {
+  //       method: "GET",
+  //       headers: {
+  //         accept: "application/json",
+  //         Authorization: `Bearer ${process.env.REACT_APP_TOKEN}`,
+  //       },
+  //     });
 
-      const response = await received.json();
-      setData(response);
-      setIsLoading(false);
-    }
+  //     const response = await received.json();
+  //     setData(response);
+  //     setIsLoading(false);
+  //   }
 
-    getData();
-  }, [title]);
+  //   getData();
+  // }, [title]);
+
+  const handleSubmit = async (e) => {
+    setData({ results: [] });
+    e.preventDefault();
+    setIsLoading(true);
+
+    const received = await fetch(`https://api.themoviedb.org/3/search/movie?query=${title}`, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${process.env.REACT_APP_TOKEN}`,
+      },
+    });
+
+    const response = await received.json();
+    setData(response);
+    setIsLoading(false);
+  };
 
   return (
     <div className="h-full flex gap-1">
@@ -110,6 +126,11 @@ export default function Search() {
                 placeholder="Search..."
                 className="w-full text-white/50 custom-input-style bg-primary-700 rounded-xl text-2xl italic font-medium border-none pl-20 py-4 shadow-xl transition focus:outline-none focus:ring-[3px] focus:ring-[#c7d2fe] focus:border-transparent"
                 onChange={(e) => setTitle(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    handleSubmit(e);
+                  }
+                }}
               />
             </span>
           </div>
