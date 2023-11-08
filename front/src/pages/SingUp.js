@@ -92,15 +92,18 @@ export default function SignUp() {
           },
           body: JSON.stringify(values),
         });
+        
         const data = await response.json();
-        if (data.status === 400 || data.status === 500) {
+
+        if (data.error == true) {
           setIsLoading(false);
-          toast.current.show({
-            severity: "error",
-            summary: "Erro",
-            detail: data.error,
-            life: 8000,
-          });
+          // toast.current.show({
+          //   severity: "error",
+          //   summary: "Erro",
+          //   detail: data.error,
+          //   life: 8000,
+          // });
+          alert('Error!!')
         } else {
           setIsLoading(false);
           navigate("/login?newUser=true");
