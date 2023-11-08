@@ -22,19 +22,10 @@ async function getUser(request, response) {
 }
 
 async function createUser(request, response) {
-    const { email, name, password } = request.body;
-
-    if (!email || !name || !password) return response.status(400).send({ error: "Missing required information" });
-
-    const foundUser = await prisma.user.findUnique({
-        where: {
-            email,
-        },
-    });
-
-    if (foundUser) return response.status(400).send({ error: "User with this email already exists" });
-
+    
     try {
+        const { email, name, password } = request.body;
+        
         const hash = await bcrypt.hash(password, 10);
 
         const newUser = await prisma.user.create({
@@ -45,9 +36,11 @@ async function createUser(request, response) {
             },
         });
 
-        response.status(201).send(newUser);
+        return response.status(201).send({error: false});
+
     } catch (err) {
-        response.status(500).send({ error: err });
+
+        return response.status(500).send({ error: true });
     }
 }
 
