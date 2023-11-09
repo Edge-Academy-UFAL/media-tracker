@@ -234,8 +234,8 @@ export default function Movie() {
           </div>
           <h1 className="w-[730px] h-[55px] font-semibold text-5xl pt-20">Recommended movies</h1>
           
-          <div className="flex gap-16 pt-10">
-            {data.results?.slice(0, 5).map((item) => (
+          <div className="flex gap-28 pt-10">
+            {data.results?.slice(0, 4).map((item) => (
                 <a key={item.id} href={`/movie/${item.id}`} className="inline-block">
                 <Tooltip target=".tooltip-target" position="top" />
                 {item.poster_path ? (
