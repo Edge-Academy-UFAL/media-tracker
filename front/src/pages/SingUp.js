@@ -92,18 +92,18 @@ export default function SignUp() {
           },
           body: JSON.stringify(values),
         });
-        
+
         const data = await response.json();
 
-        if (data.error == true) {
+        if (data.error === true) {
           setIsLoading(false);
-          // toast.current.show({
-          //   severity: "error",
-          //   summary: "Erro",
-          //   detail: data.error,
-          //   life: 8000,
-          // });
-          alert('Error!!')
+          toast.current.show({
+            severity: "error",
+            summary: "Erro",
+            detail: data.error,
+            life: 8000,
+          });
+          alert("Error!!");
         } else {
           setIsLoading(false);
           navigate("/login?newUser=true");
@@ -114,11 +114,11 @@ export default function SignUp() {
 
   return (
     <div className="flex h-full w-full flex-1 items-center flex-col justify-center text-white">
+      <Toast ref={toast} />
       {isLoading ? (
         <Loading />
       ) : (
         <div className="rounded-xl bg-primary-500 px-40 py-12">
-          <Toast ref={toast} />
           <div className="flex flex-col items-center justify-center sm:mx-auto sm:w-full sm:max-w-sm">
             <img className="mt-2 w-80" src={mediatracker} alt="mediatracker's logo"></img>
             <h2 className="mt-16 text-center text-4xl font-bold leading-9 tracking-tight">Create your account</h2>
