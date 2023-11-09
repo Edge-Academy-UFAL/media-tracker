@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 import noImageAvailable from "../assets/no-image-available.png";
 import { FaCircleCheck, FaCircleXmark, FaClock } from "react-icons/fa6";
-
+import { Tooltip } from "primereact/tooltip";
 
 export default function MovieList({ data, userMoviesIds }) {
   return (
@@ -35,26 +35,30 @@ export default function MovieList({ data, userMoviesIds }) {
                   {userMoviesIds?.find((id) => parseInt(id[0]) === item.id)[1] === "plan"
                     ? "Plan to watch"
                     : userMoviesIds?.find((id) => parseInt(id[0]) === item.id)[1] === "completed"
-                      ? "Completed"
-                      : userMoviesIds?.find((id) => parseInt(id[0]) === item.id)[1] === "dropped"
-                        ? "Dropped"
-                        : ""}
+                    ? "Completed"
+                    : userMoviesIds?.find((id) => parseInt(id[0]) === item.id)[1] === "dropped"
+                    ? "Dropped"
+                    : ""}
                 </span>
               )}
-
+              <Tooltip target=".tooltip-target" position="top" />
               {item.poster_path ? (
                 <>
                   <img
-                    className={`rounded-2xl w-[260px] h-[390px] ${userMoviesIds?.find((id) => parseInt(id[0]) === item.id) ? "opacity-40" : ""
-                      }`}
+                    className={`tooltip-target rounded-2xl w-[260px] h-[390px] ${
+                      userMoviesIds?.find((id) => parseInt(id[0]) === item.id) ? "opacity-40" : ""
+                    }`}
+                    data-pr-tooltip={item.title}
                     src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
                     alt={item.title}
                   />
                 </>
               ) : (
                 <img
-                  className={`rounded-2xl w-[260px] h-[390px] ${userMoviesIds?.find((id) => parseInt(id[0]) === item.id) ? "opacity-40" : ""
-                    }`}
+                  className={`tooltip-target rounded-2xl w-[260px] h-[390px] ${
+                    userMoviesIds?.find((id) => parseInt(id[0]) === item.id) ? "opacity-40" : ""
+                  }`}
+                  data-pr-tooltip={item.title}
                   src={noImageAvailable}
                   alt={item.title}
                 />
