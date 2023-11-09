@@ -1,7 +1,4 @@
-const { PrismaClient } = require("@prisma/client");
 const { redis } = require("../lib/cache");
-
-const prisma = new PrismaClient();
 
 async function getMovie(request, response) {
     try {
@@ -38,6 +35,7 @@ async function getMovie(request, response) {
             emptyStars: movieData.vote_average ? Array(5 - Math.ceil(movieData.vote_average / 2)).fill(0) : Array(5).fill(0),
             fullStars: movieData.vote_average ? Array(Math.floor(movieData.vote_average / 2)).fill(0) : Array(0).fill(0),
             hasHalfStar: movieData.vote_average ? movieData.vote_average % 2 !== 0 : false,
+            vote_average: movieData.vote_average,
         }
 
         await redis.set(id, JSON.stringify(movie));
@@ -49,30 +47,6 @@ async function getMovie(request, response) {
     }
 }
 
-async function rateMovie(request, response){
-    try{
-        const {userId, tmdbId} = request.params
-        const { note } = request.body
-
-        const movieRate = await prisma.movie.update({
-            where: {
-                userId,
-                tmdbId
-            },
-            data:{
-                rating: note
-            }
-        })
-        
-        return response.send(movieRate)
-
-    }catch(err){
-        return response.status(500).send(err)
-    }
-}
-
-
 module.exports = {
     getMovie,
-    rateMovie
 };

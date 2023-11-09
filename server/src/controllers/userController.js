@@ -171,10 +171,10 @@ async function deleteMovie(request, response) {
 
 async function updateStatus(request, response) {
     const userId = request.userId;
-    const { status } = request.body;
+    const { status, rating } = request.body;
     const { movieId } = request.params;
 
-    if (!status) return response.status(400).send({ error: "Missing required information" });
+    if (!status && !rating) return response.status(400).send({ error: "Missing required information" });
 
     try {
         const movie = await prisma.movie.update({
@@ -184,6 +184,7 @@ async function updateStatus(request, response) {
             },
             data: {
                 status,
+                rating,
             },
         });
 
