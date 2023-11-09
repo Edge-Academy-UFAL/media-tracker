@@ -12,6 +12,7 @@ import noImageAvailable from "../assets/no-image-available.png";
 import { FaFloppyDisk, FaRegStar, FaRegStarHalfStroke, FaStar } from "react-icons/fa6";
 import { Toast } from "primereact/toast";
 import SelectStatus from "../components/Movie/SelectStatus";
+import { Tooltip } from "primereact/tooltip";
 
 export default function Movie() {
   const [movie, setMovie] = useState({});
@@ -24,6 +25,7 @@ export default function Movie() {
 
   const [movieStatus, setMovieStatus] = useState("unset");
   const [movieId, setMovieId] = useState(null);
+  const [data, setData] = useState({ results: [] });
 
   const [rating, setRating] = useState(0);
   const [definitive, setDefinitive] = useState(false);
@@ -37,6 +39,22 @@ export default function Movie() {
     setDefinitive(true);
   };
 
+  useEffect(() => {
+    async function getData() {
+      const received = await fetch(`https://api.themoviedb.org/3/search/movie?query=avatar`, {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${process.env.REACT_APP_TOKEN}`,
+        },
+      });
+
+      const response = await received.json();
+      setData(response);
+    }
+    getData();
+  }, []);
+
   async function saveRating() {
     const response = await fetch(`${process.env.REACT_APP_API_URL}/users/movies/${movieId}`, {
       method: "PUT",
@@ -46,6 +64,9 @@ export default function Movie() {
       },
       body: JSON.stringify({ rating: rating }),
     });
+
+    const data = await response.json();
+    console.log(data);
 
     if (response.status === 200) {
       toast.current.show({
@@ -65,7 +86,7 @@ export default function Movie() {
   }
 
   useEffect(() => {
-   async function getMovieStatus() {
+    async function getMovieStatus() {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/users/movies/${tmdbId}`, {
         method: "GET",
         headers: {
@@ -95,7 +116,7 @@ export default function Movie() {
   }, [token, movieStatus]);
 
   useEffect(() => {
-     async function getMovie() {
+    async function getMovie() {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/movies/searchById/${tmdbId}`, {
         method: "GET",
         headers: {
@@ -105,10 +126,10 @@ export default function Movie() {
       });
 
       const data = await response.json();
-      console.log(data)
+      console.log(data);
       setMovie(data);
-     }
-    
+    }
+
     if (token) getMovie();
   }, [token]);
 
@@ -200,14 +221,42 @@ export default function Movie() {
                       </div>
                     ))}
                   </div>
-                  <div className="flex w-40 h-fit rounded-xl items-center text-2xl font-semibold py-3 justify-center gap-3 px-6 border-[5px] border-secondary-700 text-secondary-700 cursor-pointer transition hover:text-white hover:bg-secondary-700"
-                    onClick={saveRating}>
+                  <div
+                    className="flex w-40 h-fit rounded-xl items-center text-2xl font-semibold py-3 justify-center gap-3 px-6 border-[5px] border-secondary-700 text-secondary-700 cursor-pointer transition hover:text-white hover:bg-secondary-700"
+                    onClick={saveRating}
+                  >
                     <FaFloppyDisk className="w-7 h-7" />
                     Save
                   </div>
                 </>
               )}
             </div>
+          </div>
+          <h1 className="w-[730px] h-[55px] font-semibold text-5xl pt-20">Recommended movies</h1>
+          
+          <div className="flex gap-16 pt-10">
+            {data.results?.slice(0, 5).map((item) => (
+                <a key={item.id} href={`/movie/${item.id}`} className="inline-block">
+                <Tooltip target=".tooltip-target" position="top" />
+                {item.poster_path ? (
+                  <>
+                    <img
+                      src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+                      data-pr-tooltip={item.title}
+                      alt={item.title}
+                      className="tooltip-target rounded-2xl w-[260px] h-[390px]"
+                    />
+                  </>
+                ) : (
+                  <img
+                    src={noImageAvailable}
+                    alt={item.title}
+                    data-pr-tooltip={item.title}
+                    className="tooltip-target rounded-2xl w-[260px] h-[390px]"
+                  />
+                )}
+                </a>
+            ))}
           </div>
         </div>
       </Body>

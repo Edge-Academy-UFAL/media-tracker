@@ -122,7 +122,7 @@ export default function SelectStatus({ token, toast, title, tmdbId, movie, movie
           Add to your library
         </div>
       ) : (
-        <div className={`select-menu min-h-[300px] ${open ? "active" : ""}`}>
+        <div className={`select-menu ${open ? "active" : ""}`}>
           <div
             className={`select-btn relative ${
               movieStatus === "plan"
@@ -147,8 +147,8 @@ export default function SelectStatus({ token, toast, title, tmdbId, movie, movie
           </div>
 
           <ul className="options">
-              <li className="option" onClick={() => deleteMovie()}>
-                <FaCircleExclamation size={25} />
+            <li className="option" onClick={() => deleteMovie()}>
+              <FaCircleExclamation size={25} />
               <span className="option-text">Remove from library</span>
             </li>
             <li className="option" onClick={() => changeStatus("plan")}>
