@@ -103,7 +103,6 @@ export default function SignUp() {
             detail: data.error,
             life: 8000,
           });
-          alert("Error!!");
         } else {
           setIsLoading(false);
           navigate("/login?newUser=true");

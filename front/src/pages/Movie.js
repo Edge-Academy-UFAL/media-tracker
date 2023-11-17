@@ -26,6 +26,7 @@ export default function Movie() {
   const [movieStatus, setMovieStatus] = useState("unset");
   const [movieId, setMovieId] = useState(null);
   const [data, setData] = useState({ results: [] });
+  const [recommendedMovies, setRecommendedMovies] = useState([]);
 
   const [rating, setRating] = useState(0);
   const [definitive, setDefinitive] = useState(false);
@@ -38,22 +39,6 @@ export default function Movie() {
     setRating(rating);
     setDefinitive(true);
   };
-
-  useEffect(() => {
-    async function getData() {
-      const received = await fetch(`https://api.themoviedb.org/3/search/movie?query=avatar`, {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${process.env.REACT_APP_TOKEN}`,
-        },
-      });
-
-      const response = await received.json();
-      setData(response);
-    }
-    getData();
-  }, []);
 
   async function saveRating() {
     const response = await fetch(`${process.env.REACT_APP_API_URL}/users/movies/${movieId}`, {
@@ -126,12 +111,86 @@ export default function Movie() {
       });
 
       const data = await response.json();
-      console.log(data);
       setMovie(data);
     }
 
-    if (token) getMovie();
+    async function fetchRecommendedMovies() {
+      setRecommendedMovies([]);
+      setData({ results: [] });
+      const id = tmdbId;
+      const state = movieStatus;
+
+      const prod_genres_res = await fetch(`https://api.themoviedb.org/3/movie/${id}`, {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${process.env.REACT_APP_TOKEN}`,
+        },
+      });
+
+      const prod_genres = await prod_genres_res.json();
+      const title = prod_genres.title;
+      const production_companies = prod_genres.production_companies.map((company) => company.name);
+      const genres = prod_genres.genres.map((genre) => genre.name);
+
+      const keywords_res = await fetch(`https://api.themoviedb.org/3/movie/${id}/keywords`, {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${process.env.REACT_APP_TOKEN}`,
+        },
+      });
+
+      const keywords_objs = await keywords_res.json();
+      const keywords = keywords_objs.keywords.map((keyword) => keyword.name);
+
+      const credits_res = await fetch(`https://api.themoviedb.org/3/movie/${id}/credits`, {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${process.env.REACT_APP_TOKEN}`,
+        },
+      });
+
+      const credits = await credits_res.json();
+      const cast = credits.cast.map((person) => person.name);
+      const crew = credits.crew.filter((person) => person.job === "Director").map((person) => person.name);
+
+      const response = await fetch(`${process.env.REACT_APP_AI_API_URL}/recommend/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id, title, production_companies, keywords, cast, crew, genres, rating, state }),
+      });
+
+      const data = await response.json();
+      setRecommendedMovies(data);
+    }
+    
+    if (token) getMovie(tmdbId);
+    fetchRecommendedMovies();
   }, [token]);
+
+  useEffect(() => {
+    async function getRecommendedMovies() {
+      recommendedMovies.forEach(async (item) => {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/movies/searchById/${item}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const movie = await response.json();
+        if (movie.id in data.results) return;
+        setData((data) => ({ results: [...data.results, movie] }));
+      });
+    }
+
+    if (recommendedMovies) getRecommendedMovies();
+  }, [recommendedMovies]);
 
   return (
     <div className="h-full flex gap-1">
@@ -234,8 +293,8 @@ export default function Movie() {
           </div>
           <h1 className="w-[730px] h-[55px] font-semibold text-5xl pt-20">Recommended movies</h1>
           
-          <div className="flex gap-28 pt-10">
-            {data.results?.slice(0, 4).map((item) => (
+          <div className="grid grid-cols-4 gap-10 mt-10">
+            {data.results?.slice(0, 8).map((item) => (
                 <a key={item.id} href={`/movie/${item.id}`} className="inline-block">
                 <Tooltip target=".tooltip-target" position="top" />
                 {item.poster_path ? (

@@ -1,7 +1,17 @@
 from fastapi import FastAPI
-import recommendation
+from fastapi.middleware.cors import CORSMiddleware
 
+import recommendation
+ 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 @app.get('/')
 def endpoints():
@@ -26,6 +36,7 @@ def endpoints():
 
 @app.post('/recommend')
 def recommend_movies_from_movie(movie: recommendation.Movie):
+    print('movie:', movie)
     res = recommendation.get_recommended_movies(movie)
     
     res = sorted(res, key=lambda x: x[1], reverse=True)
