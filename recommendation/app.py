@@ -58,5 +58,10 @@ def explore_movies(movies: recommendation.MovieList):
     print("recommendations:", recommendations)
 
     res = [recommendation[0] for recommendation in recommendations]
+    
+    for movie in movies.movies:
+        if movie.id in res:
+            res.remove(id)
+
     print('res:',  res)
     return res
