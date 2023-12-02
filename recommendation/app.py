@@ -61,7 +61,7 @@ def explore_movies(movies: recommendation.MovieList):
     
     for movie in movies.movies:
         if movie.id in res:
-            res.remove(id)
+            res.remove(movie.id)
 
     print('res:',  res)
     return res
