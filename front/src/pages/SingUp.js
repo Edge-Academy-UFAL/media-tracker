@@ -44,8 +44,8 @@ export default function SignUp() {
     if (!emailRegex.test(email)) {
       toast.current.show({
         severity: "error",
-        summary: "Erro",
-        detail: "Por favor, insira um e-mail válido",
+        summary: "Error",
+        detail: "Please enter a valid email",
         life: 8000,
       });
     } else {
@@ -64,7 +64,7 @@ export default function SignUp() {
       toast.current.show({
         severity: "error",
         summary: "Erro",
-        detail: "Por favor, preencha todos os campos",
+        detail: "Please fill all the fields",
         life: 8000,
       });
     } else {
@@ -73,7 +73,7 @@ export default function SignUp() {
         toast.current.show({
           severity: "error",
           summary: "Erro",
-          detail: "As senhas não coincidem",
+          detail: "Passwords don't match",
           life: 8000,
         });
       } else {
@@ -99,8 +99,8 @@ export default function SignUp() {
           setIsLoading(false);
           toast.current.show({
             severity: "error",
-            summary: "Erro",
-            detail: data.error,
+            summary: "Error",
+            detail: "Email already registered",
             life: 8000,
           });
         } else {

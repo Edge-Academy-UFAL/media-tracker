@@ -5,6 +5,7 @@ import { useAuthUser } from "react-auth-kit";
 
 import Sidebar from "../components/Sidebar/Sidebar";
 import Body from "../components/Body";
+import Skeleton from "../components/Skeleton";
 
 import Mediatracker from "../assets/mediatracker.svg";
 import noImageAvailable from "../assets/no-image-available.png";
@@ -50,8 +51,7 @@ export default function Movie() {
       body: JSON.stringify({ rating: rating }),
     });
 
-    const data = await response.json();
-    console.log(data);
+    await response.json();
 
     if (response.status === 200) {
       toast.current.show({
@@ -91,9 +91,7 @@ export default function Movie() {
         setMovieId(data.id);
         setRating(data.rating);
         if (data.rating) setDefinitive(true);
-      } catch (err) {
-        console.log(err);
-      }
+      } catch (err) { }
     }
 
     if (token && tmdbId) getMovieStatus();
@@ -167,7 +165,7 @@ export default function Movie() {
       const data = await response.json();
       setRecommendedMovies(data);
     }
-    
+
     if (token) getMovie(tmdbId);
     fetchRecommendedMovies();
   }, [token]);
@@ -292,10 +290,18 @@ export default function Movie() {
             </div>
           </div>
           <h1 className="w-[730px] h-[55px] font-semibold text-5xl pt-20">Recommended movies</h1>
-          
-          <div className="grid grid-cols-4 gap-10 mt-10">
-            {data.results?.slice(0, 8).map((item) => (
-                <a key={item.id} href={`/movie/${item.id}`} className="inline-block">
+
+          <div className={`grid grid-cols-4 gap-10 mt-10 ${data.results?.length === 0 && "-mb-12"}`}>
+            {data.results?.length === 0 && (
+              <>
+                <Skeleton />
+                <Skeleton />
+                <Skeleton />
+                <Skeleton />
+              </>
+            )}
+            {data.results?.slice(0, 4).map((item) => (
+              <a key={item.id} href={`/movie/${item.id}`} className="inline-block">
                 <Tooltip target=".tooltip-target" position="top" />
                 {item.poster_path ? (
                   <>
@@ -314,7 +320,7 @@ export default function Movie() {
                     className="tooltip-target rounded-2xl w-[260px] h-[390px]"
                   />
                 )}
-                </a>
+              </a>
             ))}
           </div>
         </div>

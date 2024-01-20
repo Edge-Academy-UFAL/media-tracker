@@ -59,8 +59,7 @@ export default function SelectStatus({ token, toast, title, tmdbId, movie, movie
     });
 
     if (response.status !== 200) {
-      const data = await response.json();
-      console.log(data);
+      await response.json();
       toast.current.show({
         severity: "error",
         summary: "Error",
