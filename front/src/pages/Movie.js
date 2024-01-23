@@ -154,7 +154,7 @@ export default function Movie() {
       const cast = credits.cast.map((person) => person.name);
       const crew = credits.crew.filter((person) => person.job === "Director").map((person) => person.name);
 
-      const response = await fetch(${process.env.REACT_APP_AI_API_URL}/recommend/`, {
+      const response = await fetch(`${process.env.REACT_APP_AI_API_URL}/recommend/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
