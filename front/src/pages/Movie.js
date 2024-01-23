@@ -156,7 +156,7 @@ export default function Movie() {
 
       console.log(process.env.REACT_APP_AI_API_URL);
 
-      const response = await fetch(`${process.env.REACT_APP_AI_API_URL}/recommend/`, {
+      const response = await fetch("https://ai.bookmarks-api.shop/recommend/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
