@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import Sidebar from "../components/Sidebar/Sidebar";
 import Body from "../components/Body";
+import Tooltip from "../components/Tooltip";
 
 import { FaWandMagicSparkles } from "react-icons/fa6";
 
@@ -17,6 +18,7 @@ export default function Explore() {
   const [title, setTitle] = useState("");
   const [userMoviesIds, setUserMoviesIds] = useState([]);
   const [isLoading, setIsLoading] = useState(title !== "");
+  const [showTooltip, setShowTooltip] = useState(false);
   const authUser = useAuthUser();
   const navigate = useNavigate();
   const location = useLocation();
@@ -34,10 +36,17 @@ export default function Explore() {
               <div
                 className="flex h-10 px-8 py-2 rounded-full shadow-md shadow-black/25 transition items-center"
                 style={{ background: "rgba(159, 64, 192, 0.35)" }}
+                onMouseEnter={() => {
+                  setShowTooltip(true);
+                }}
+                onMouseLeave={() => {
+                  setShowTooltip(false);
+                }}
               >
-                <span className="text-color-primary text-xl">powered with AI</span>{" "}
+                <span className="text-color-primary text-xl">Powered with AI</span>{" "}
                 <FaWandMagicSparkles size={20} className="text-white ml-3" />
               </div>
+              {showTooltip && <Tooltip />}
             </span>
           </div>
         </div>
