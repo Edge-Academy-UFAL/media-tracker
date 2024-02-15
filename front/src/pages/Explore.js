@@ -1,6 +1,5 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
 
 import Sidebar from "../components/Sidebar/Sidebar";
 import Body from "../components/Body";
@@ -15,15 +14,147 @@ import Skeleton from "../components/Skeleton";
 
 export default function Explore() {
   const [data, setData] = useState({ results: [] });
-  const [title, setTitle] = useState("");
-  const [userMoviesIds, setUserMoviesIds] = useState([]);
-  const [isLoading, setIsLoading] = useState(title !== "");
+  const [userMovies, setUserMovies] = useState([]);
+  const [detailedMovies, setDetailedMovies] = useState([]);
+  const [exploreMovies, setExploreMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [showTooltip, setShowTooltip] = useState(false);
   const authUser = useAuthUser();
-  const navigate = useNavigate();
-  const location = useLocation();
 
   const token = authUser().token;
+
+  async function getMovieDetails(movie) {
+    const id = movie.tmdbId;
+    const state = movie.status;
+    const rating = movie.rating || 0;
+
+    const prod_genres_res = await fetch(`https://api.themoviedb.org/3/movie/${id}`, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${process.env.REACT_APP_TOKEN}`,
+      },
+    });
+
+    const prod_genres = await prod_genres_res.json();
+    const title = prod_genres.title;
+    const production_companies = prod_genres.production_companies.map((company) => company.name);
+    const genres = prod_genres.genres.map((genre) => genre.name);
+
+    const keywords_res = await fetch(`https://api.themoviedb.org/3/movie/${id}/keywords`, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${process.env.REACT_APP_TOKEN}`,
+      },
+    });
+
+    const keywords_objs = await keywords_res.json();
+    const keywords = keywords_objs.keywords.map((keyword) => keyword.name);
+
+    const credits_res = await fetch(`https://api.themoviedb.org/3/movie/${id}/credits`, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${process.env.REACT_APP_TOKEN}`,
+      },
+    });
+
+    const credits = await credits_res.json();
+    const cast = credits.cast.map((person) => person.name);
+    const crew = credits.crew.filter((person) => person.job === "Director").map((person) => person.name);
+
+    return {
+      id,
+      title,
+      production_companies,
+      keywords,
+      cast,
+      crew,
+      genres,
+      rating,
+      state,
+    };
+  }
+
+  useEffect(() => {
+    async function getUserMovies() {
+      if (!token) return;
+
+      const moviesReq = await fetch(`${process.env.REACT_APP_API_URL}/users/movies`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const movies = await moviesReq.json();
+      setUserMovies(movies);
+    }
+
+    if (token) getUserMovies();
+  }, [token]);
+
+  useEffect(() => {
+    async function appendMovieDetails() {
+      const detailedMoviesArray = await Promise.all(
+        userMovies.map(async (movie) => {
+          return await getMovieDetails(movie);
+        }),
+      );
+      setDetailedMovies(detailedMoviesArray);
+    }
+
+    if (userMovies.length > 0) appendMovieDetails();
+  }, [userMovies]);
+
+  useEffect(() => {
+    async function fetchExploreMovies() {
+      const response = await fetch(`${process.env.REACT_APP_AI_API_URL}/explore/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ movies: detailedMovies }),
+      });
+
+      const exploreIds = await response.json();
+      const exploreMovies = exploreIds.filter((id, index) => exploreIds.indexOf(id) === index);
+      setExploreMovies(exploreMovies);
+    }
+
+    if (detailedMovies.length > 0 && exploreMovies.length === 0) fetchExploreMovies();
+  }, [detailedMovies]);
+
+  useEffect(() => {
+    async function getMovie(tmdbId) {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/movies/searchById/${tmdbId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const movie = await response.json();
+
+      return movie;
+    }
+
+    async function appendExploreMovies() {
+      const exploreMoviesArray = await Promise.all(
+        exploreMovies.map(async (movie) => {
+          return await getMovie(movie);
+        }),
+      );
+
+      setData({ results: exploreMoviesArray });
+      setIsLoading(false);
+    }
+
+    if (exploreMovies.length > 0) appendExploreMovies();
+  }, [exploreMovies]);
 
   return (
     <div className="h-full flex gap-1">
@@ -43,7 +174,7 @@ export default function Explore() {
                   setShowTooltip(false);
                 }}
               >
-                <span className="text-color-primary text-xl">Powered with AI</span>{" "}
+                <span className="text-color-primary text-xl cursor-pointer">Powered with AI</span>{" "}
                 <FaWandMagicSparkles size={20} className="text-white ml-3" />
               </div>
               {showTooltip && <Tooltip />}
@@ -70,7 +201,7 @@ export default function Explore() {
             </div>
           </div>
         ) : (
-          <MovieList data={data} userMoviesIds={userMoviesIds} />
+          <MovieList data={data} />
         )}
       </Body>
     </div>

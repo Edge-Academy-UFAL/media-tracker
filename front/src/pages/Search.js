@@ -110,7 +110,7 @@ export default function Search() {
 
     navigate(`?title=${title}`);
 
-    const received = await fetch(`https://api.themoviedb.org/3/search/movie?query=${title}`, {
+    const received = await fetch(`https://api.themoviedb.org/3/search/movie?query=${title}&adult=false`, {
       method: "GET",
       headers: {
         accept: "application/json",
